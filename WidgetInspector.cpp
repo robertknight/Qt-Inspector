@@ -5,9 +5,11 @@
 #include "ObjectTreeModel.h"
 #include "OutOfProcessClipboard.h"
 #include "WidgetPicker.h"
+#include "WidgetInspectorShortcut.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QClipboard>
+#include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
 #include <QtGui/QPushButton>
@@ -25,7 +27,11 @@ WidgetInspector::WidgetInspector(QWidget* parent)
 
 	m_objectModel = new ObjectTreeModel(this);
 	m_objectTree = new QTreeView(this);
+	m_objectTree->header()->setVisible(false);
+	m_objectTree->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 	m_objectTree->setModel(m_objectModel);
+	m_objectTree->header()->setResizeMode(0,QHeaderView::ResizeToContents);
+	m_objectTree->header()->setStretchLastSection(false);
 
 	connect(m_objectTree->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 	        this,SLOT(selectionChanged(QModelIndex,QModelIndex)));
@@ -40,23 +46,23 @@ WidgetInspector::WidgetInspector(QWidget* parent)
 	layout->addWidget(topSplitter);
 
 	QHBoxLayout* searchLayout = new QHBoxLayout;
-	searchLayout->addWidget(new QLabel("Search:",this));
+	searchLayout->addWidget(new QLabel(tr("Search:"),this));
 
 	QLineEdit* searchEdit = new QLineEdit(this);
 	connect(searchEdit,SIGNAL(textChanged(QString)),this,SLOT(search(QString)));
 	searchLayout->addWidget(searchEdit);
 	layout->addLayout(searchLayout);
 
-	QPushButton* copyToDebuggerButton = new QPushButton("Copy Reference",this);
+	QPushButton* copyToDebuggerButton = new QPushButton(tr("Copy Reference"),this);
 	connect(copyToDebuggerButton,SIGNAL(clicked()),
 	        this,SLOT(copyDebuggerReference()));
 
 	m_picker = new WidgetPicker(this);
 	connect(m_picker,SIGNAL(widgetPicked(QWidget*)),this,SLOT(pickerFinished(QWidget*)));
-	QPushButton* pickButton = new QPushButton("Pick Widget",this);
+	QPushButton* pickButton = new QPushButton(tr("Pick Widget"),this);
 	connect(pickButton,SIGNAL(clicked()),m_picker,SLOT(start()));
 
-	QPushButton* refreshButton = new QPushButton("Refresh",this);
+	QPushButton* refreshButton = new QPushButton(tr("Refresh"),this);
 	connect(refreshButton,SIGNAL(clicked()),this,SLOT(resetModel()));
 
 	QHBoxLayout* actionLayout = new QHBoxLayout;
@@ -65,6 +71,10 @@ WidgetInspector::WidgetInspector(QWidget* parent)
 	actionLayout->addWidget(copyToDebuggerButton);
 	actionLayout->addWidget(refreshButton);
 	layout->addLayout(actionLayout);
+
+	resize(700,400);
+
+	resetModel();
 }
 
 void WidgetInspector::pickerFinished(QWidget* widget)
@@ -118,7 +128,22 @@ void WidgetInspector::search(const QString& query)
 void WidgetInspector::select(QObject* object)
 {
 	QModelIndex index = m_objectModel->index(object);
+	if (!index.isValid())
+	{
+		// if no matching object is found in the model, then try refreshing
+		// the model and searching again
+		resetModel();
+		index = m_objectModel->index(object);
+	}
+
 	m_objectTree->scrollTo(index);
 	m_objectTree->selectionModel()->setCurrentIndex(index,QItemSelectionModel::SelectCurrent);
+}
+
+void WidgetInspector::registerGlobalShortcut(const QKeySequence& key, QWidget* parentWidget)
+{
+	WidgetInspectorShortcut* shortcut = new WidgetInspectorShortcut(parentWidget);
+	shortcut->setKey(key);
+	shortcut->setContext(Qt::ApplicationShortcut);
 }
 

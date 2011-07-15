@@ -1,10 +1,20 @@
 #include "ObjectTreeModel.h"
 
+#include "ObjectFilter.h"
+
 #include <QtDebug>
+
+
 
 ObjectTreeModel::ObjectTreeModel(QObject* parent)
 : QAbstractItemModel(parent)
+, m_filter(0)
 {
+}
+
+void ObjectTreeModel::setFilter(ObjectFilter *filter)
+{
+	m_filter = filter;
 }
 
 int ObjectTreeModel::columnCount(const QModelIndex& parent) const
@@ -30,8 +40,11 @@ void ObjectTreeModel::setRootObjects(const QList<QObject*>& roots)
 
 	Q_FOREACH(QObject* root, roots)
 	{
-		ObjectItem* rootItem = createItem(root,0);
-		m_roots << rootItem;
+		if (! m_filter || m_filter->accepts(root))
+		{
+			ObjectItem* rootItem = createItem(root,0,m_filter);
+			m_roots << rootItem;
+		}
 	}
 
 	reset();
@@ -168,7 +181,7 @@ QVariant ObjectTreeModel::headerData(int section, Qt::Orientation orientation, i
 	}
 }
 
-ObjectTreeModel::ObjectItem* ObjectTreeModel::createItem(QObject* object, ObjectItem* parent)
+ObjectTreeModel::ObjectItem* ObjectTreeModel::createItem(QObject* object, ObjectItem* parent, ObjectFilter *filter)
 {
 	ObjectItem* item = new ObjectItem;
 	item->parent = parent;
@@ -176,7 +189,10 @@ ObjectTreeModel::ObjectItem* ObjectTreeModel::createItem(QObject* object, Object
 
 	Q_FOREACH(QObject* child, object->children())
 	{
-		item->children << createItem(child,item);
+		if (! filter || filter->accepts(child))
+		{ 
+			item->children << createItem(child,item,filter);
+		}
 	}
 
 	return item;

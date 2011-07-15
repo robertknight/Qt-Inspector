@@ -1,15 +1,20 @@
 #pragma once
 
+#include "libMendeleyExport.h"
+
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QWeakPointer>
 
-class Q_DECL_EXPORT ObjectTreeModel : public QAbstractItemModel
+class ObjectFilter;
+
+class LIB_MENDELEY_EXPORT ObjectTreeModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
 	public:
 		ObjectTreeModel(QObject* parent);
 
+		void setFilter(ObjectFilter *filter);
 		void setRootObjects(const QList<QObject*>& roots);
 		QList<QObject*> rootObjects() const;
 
@@ -43,7 +48,7 @@ class Q_DECL_EXPORT ObjectTreeModel : public QAbstractItemModel
 		int indexInParent(ObjectItem* item) const;
 		ObjectItem* index(QObject* object, const QList<ObjectItem*>& items) const;
 
-		static ObjectItem* createItem(QObject* object, ObjectItem* parent);
+		static ObjectItem* createItem(QObject* object, ObjectItem* parent, ObjectFilter *filter);
 		static ObjectItem* itemFromIndex(const QModelIndex& index);
 
 		bool matches(QObject* object, const QString& query) const;
@@ -51,5 +56,6 @@ class Q_DECL_EXPORT ObjectTreeModel : public QAbstractItemModel
 		QString displayText(QObject* object) const;
 
 		QList<ObjectItem*> m_roots;
+		ObjectFilter* m_filter;
 };
 

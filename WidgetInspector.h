@@ -1,5 +1,7 @@
 #pragma once
 
+#include "libMendeleyExport.h"
+
 #include <QtGui/QWidget>
 
 class ObjectInspector;
@@ -11,12 +13,14 @@ class WidgetPicker;
 class QModelIndex;
 class QTreeView;
 
-class Q_DECL_EXPORT WidgetInspector : public QWidget
+class LIB_MENDELEY_EXPORT WidgetInspector : public QWidget
 {
 	Q_OBJECT
 
 	public:
-		WidgetInspector(QWidget* parent);
+		WidgetInspector(QWidget* parent = 0);
+
+		static void registerGlobalShortcut(const QKeySequence& key, QWidget* parentWidget);
 
 	private Q_SLOTS:
 		void resetModel();

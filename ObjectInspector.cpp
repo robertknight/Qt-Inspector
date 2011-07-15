@@ -1,47 +1,13 @@
 #include "ObjectInspector.h"
 
+#include "ObjectPropertyModel.h"
+
+#include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
-#include <QtGui/QStandardItemModel>
-#include <QtGui/QVBoxLayout>
+#include <QtGui/QLineEdit>
+#include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QTableView>
-#include <QtCore/QMetaProperty>
-
-class ObjectPropertyModel : public QStandardItemModel
-{
-	public:
-		ObjectPropertyModel(QObject* parent);
-
-		void setObject(QObject* object);
-};
-
-ObjectPropertyModel::ObjectPropertyModel(QObject* parent)
-: QStandardItemModel(parent)
-{
-	setColumnCount(2);
-	setObject(0);
-}
-
-void ObjectPropertyModel::setObject(QObject* object)
-{
-	clear();
-
-	setHorizontalHeaderLabels(
-		QStringList() << "Property" << "Value"
-	);
-
-	if (object)
-	{
-		const QMetaObject* metaObject = object->metaObject();
-		for (int i=0; i < metaObject->propertyCount(); i++)
-		{
-			QMetaProperty property = metaObject->property(i);
-
-			QStandardItem* nameItem = new QStandardItem(property.name());
-			QStandardItem* valueItem = new QStandardItem(property.read(object).toString());
-			insertRow(i,QList<QStandardItem*>() << nameItem << valueItem);
-		}
-	}
-}
+#include <QtGui/QVBoxLayout>
 
 ObjectInspector::ObjectInspector(QWidget* parent)
 : QWidget(parent)
@@ -53,10 +19,26 @@ ObjectInspector::ObjectInspector(QWidget* parent)
 	layout->addWidget(m_nameLabel);
 
 	m_propertyView = new QTableView(this);
+	m_propertyView->verticalHeader()->setVisible(false);
+	m_propertyView->horizontalHeader()->setStretchLastSection(true);
+
+	QHBoxLayout* filterLayout = new QHBoxLayout;
+	QLabel* filterLabel = new QLabel(tr("Filter:"),this);
+	m_propertyFilterEdit = new QLineEdit(this);
+	connect(m_propertyFilterEdit,SIGNAL(textChanged(QString)),
+	        this,SLOT(changeFilter(QString)));
+	filterLayout->addWidget(filterLabel);
+	filterLayout->addWidget(m_propertyFilterEdit);
+
 	m_model = new ObjectPropertyModel(this);
-	m_propertyView->setModel(m_model);
+	m_propertySortModel = new QSortFilterProxyModel(this);
+	m_propertySortModel->setSourceModel(m_model);
+	m_propertySortModel->sort(0,Qt::AscendingOrder);
+
+	m_propertyView->setModel(m_propertySortModel);
 
 	layout->addWidget(m_propertyView);
+	layout->addLayout(filterLayout);
 
 	setObject(0);
 }
@@ -91,5 +73,10 @@ void ObjectInspector::setObject(QObject* object)
 QObject* ObjectInspector::object() const
 {
 	return m_currentObject.data();
+}
+
+void ObjectInspector::changeFilter(const QString& text)
+{
+	m_propertySortModel->setFilterFixedString(text);
 }
 
