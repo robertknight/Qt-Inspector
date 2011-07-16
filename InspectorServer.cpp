@@ -105,6 +105,13 @@ void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* me
 	}
 }
 
+void InspectorServer::updateObjectProperty(QObject* object, const service::QtObject_Property& property)
+{
+	const char* name = property.name().c_str();
+	QVariant value = QString::fromStdString(property.value());
+	object->setProperty(name,value);
+}
+
 void InspectorServer::handleRequest(const service::InspectorRequest& request,
                                     service::InspectorResponse* response)
 {
@@ -126,6 +133,12 @@ void InspectorServer::handleRequest(const service::InspectorRequest& request,
 				QObject* object = m_objectMap.getObject(request.objectid());
 				service::QtObject* objectMessage = response->add_object();
 				updateObjectMessage(object,objectMessage);
+			}
+			break;
+		case service::InspectorRequest::WritePropertyRequest:
+			{
+				QObject* object = m_objectMap.getObject(request.objectid());
+				updateObjectProperty(object,request.propertyupdate());
 			}
 			break;
 	};

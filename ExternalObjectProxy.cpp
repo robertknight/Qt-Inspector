@@ -65,15 +65,20 @@ void ExternalObjectProxy::writeProperty(const QString& name, const QVariant& val
 {
 	doLoad();
 
+	Property updatedProperty;
+
 	QMutableListIterator<Property> iter(m_properties);
 	while (iter.hasNext())
 	{
 		Property& property = iter.next();
 		if (property.name == name)
 		{
-			property.value == value;
+			property.value = value;
+			updatedProperty = property;
 		}
 	}
+
+	m_appProxy->updateProperty(m_objectId,updatedProperty);
 }
 
 QList<ObjectProxy*> ExternalObjectProxy::children()

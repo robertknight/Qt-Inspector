@@ -22,11 +22,13 @@ message InspectorRequest
 	{
 		FetchTopLevelWidgetsRequest = 1;
 		FetchObjectRequest = 2;
+		WritePropertyRequest = 3;
 	}
 
 	required RequestType type = 1;
 
 	optional int32 objectId = 2;
+	optional QtObject.Property propertyUpdate = 3;
 }
 
 message InspectorResponse

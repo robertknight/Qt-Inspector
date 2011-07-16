@@ -15,6 +15,7 @@ namespace service
 	class InspectorRequest;
 	class InspectorResponse;
 	class QtObject;
+	class QtObject_Property;
 };
 
 class InspectorServer : public QObject
@@ -35,6 +36,7 @@ class InspectorServer : public QObject
 		void handleRequest(const service::InspectorRequest& request,
                            service::InspectorResponse* response);
 		void updateObjectMessage(QObject* object, service::QtObject* message);
+		void updateObjectProperty(QObject* object, const service::QtObject_Property& property);
 
 		QTextStream* m_log;
 		QLocalServer* m_server;

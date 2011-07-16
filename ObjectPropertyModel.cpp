@@ -45,7 +45,8 @@ void ObjectPropertyModel::updatePropertyValue(QStandardItem* item)
 	if (m_object)
 	{
 		QVariant newValue = item->data(Qt::EditRole);
-		m_object->writeProperty(propertyName.toLocal8Bit(),newValue);
+		qDebug() << "setting property" << propertyName << "to" << newValue;
+		m_object->writeProperty(propertyName,newValue);
 	}
 }
 

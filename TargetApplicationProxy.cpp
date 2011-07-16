@@ -130,6 +130,20 @@ void TargetApplicationProxy::updateProxy(const service::QtObject& object, Extern
 	proxy->setChildIds(childIds);
 }
 
+void TargetApplicationProxy::updateProperty(int objectId, const ObjectProxy::Property& property)
+{
+	service::InspectorRequest request;
+	service::InspectorResponse response;
+
+	request.set_type(service::InspectorRequest::WritePropertyRequest);
+	request.set_objectid(objectId);
+	request.mutable_propertyupdate()->set_name(property.name.toStdString());
+	request.mutable_propertyupdate()->set_value(property.value.toString().toStdString());
+	request.mutable_propertyupdate()->set_iswritable(true);
+
+	sendRequest(request,&response);
+}
+
 bool TargetApplicationProxy::sendRequest(const service::InspectorRequest& request,
                                          service::InspectorResponse* response)
 {

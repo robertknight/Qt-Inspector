@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MessageReader.h"
+#include "ObjectProxy.h"
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>
@@ -8,7 +9,6 @@
 #include <QtNetwork/QLocalSocket>
 
 class ExternalObjectProxy;
-class ObjectProxy;
 
 class QLocalSocket;
 
@@ -35,6 +35,7 @@ class TargetApplicationProxy : public QObject
 		ObjectProxy* fetchProxy(int objectId);
 		
 		bool fetchObject(ExternalObjectProxy* proxy);
+		void updateProperty(int objectId, const ObjectProxy::Property& property);
 
 	private Q_SLOTS:
 		void socketError(QLocalSocket::LocalSocketError error);
