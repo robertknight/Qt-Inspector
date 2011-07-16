@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	QStringList args = app.arguments();
 	if (args.count() < 2)
 	{
-		qWarning() << "Usage: qtinspector <pid>|<program>";
+		qWarning() << "Usage: qtinspector <pid>|<program> (<args>...)";
 		return -1;
 	}
 
@@ -25,7 +25,12 @@ int main(int argc, char** argv)
 	int targetPid = args.at(1).toInt();
 	if (targetPid == 0)
 	{
-		process.start(args.at(1));
+		QStringList programArgs;
+		for (int i=2; i < args.count(); i++)
+		{
+			programArgs << args.at(i);
+		}
+		process.start(args.at(1),programArgs);
 		process.waitForStarted();
 		targetPid = process.pid();
 	}
