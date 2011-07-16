@@ -13,10 +13,12 @@ class ExternalObjectProxy : public ObjectProxy
 		void setClassName(const QString& className);
 		void setObjectName(const QString& objectName);
 		void setChildIds(const QList<int>& children);
+		void setAddress(quintptr address);
 		void setLoaded(bool loaded);
 		void addProperty(const Property& property);
 		void removeProperty(const QString& name);
 
+		virtual quintptr address() const;
 		virtual QString className() const;
 		virtual QString objectName() const;
 		virtual QList<ObjectProxy*> children();
@@ -30,6 +32,7 @@ class ExternalObjectProxy : public ObjectProxy
 		int m_objectId;
 		bool m_isLoaded;
 
+		quintptr m_address;
 		QString m_className;
 		QString m_objectName;
 		QList<Property> m_properties;

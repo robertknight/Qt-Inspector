@@ -112,6 +112,7 @@ void TargetApplicationProxy::updateProxy(const service::QtObject& object, Extern
 	proxy->setLoaded(true);
 	proxy->setClassName(QString::fromStdString(object.classname()));
 	proxy->setObjectName(QString::fromStdString(object.objectname()));
+	proxy->setAddress(object.address());
 	
 	for (int i=0; i < object.property_size(); i++)
 	{

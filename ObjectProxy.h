@@ -24,6 +24,7 @@ class ObjectProxy
 			bool isWritable;
 		};
 
+		virtual quintptr address() const = 0;
 		virtual QString className() const = 0;
 		virtual QString objectName() const = 0;
 		virtual QList<ObjectProxy*> children() = 0;

@@ -89,6 +89,7 @@ void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* me
 	message->set_id(id);
 	message->set_classname(object->metaObject()->className());
 	message->set_objectname(object->objectName().toStdString());
+	message->set_address(reinterpret_cast<quintptr>(object));
 
 	for (int i=0; i < object->metaObject()->propertyCount(); i++)
 	{

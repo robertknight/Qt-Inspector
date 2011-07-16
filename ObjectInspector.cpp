@@ -59,7 +59,7 @@ void ObjectInspector::setObject(ObjectProxy* object)
 		labelText = QString("%1 [%2] (%3)")
 		  .arg(object->className())
 		  .arg(object->objectName())
-		  .arg(formatAddress(object));
+		  .arg(formatAddress(reinterpret_cast<void*>(object->address())));
 	}
 	else
 	{

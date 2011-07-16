@@ -107,3 +107,14 @@ QList<ObjectProxy::Property> ExternalObjectProxy::properties() const
 	return m_properties;
 }
 
+void ExternalObjectProxy::setAddress(quintptr address)
+{
+	m_address = address;
+}
+
+quintptr ExternalObjectProxy::address() const
+{
+	doLoad();
+	return m_address;
+}
+
