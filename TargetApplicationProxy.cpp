@@ -169,6 +169,11 @@ ObjectProxy* TargetApplicationProxy::pickWidget()
 bool TargetApplicationProxy::sendRequest(const service::InspectorRequest& request,
                                          service::InspectorResponse* response)
 {
+	if (m_socket->state() != QLocalSocket::ConnectedState)
+	{
+		return false;
+	}
+
 	QByteArray requestData(request.ByteSize(),0);
 	request.SerializeToArray(requestData.data(),requestData.count());
 	QByteArray messageData = MessageWriter::toMessage(requestData);
@@ -179,11 +184,17 @@ bool TargetApplicationProxy::sendRequest(const service::InspectorRequest& reques
 	}
 	m_socket->waitForBytesWritten();
 
-	while (m_messageReader.messageCount() < 1)
+	while (m_messageReader.messageCount() < 1 &&
+	       m_socket->state() == QLocalSocket::ConnectedState)
 	{
 		m_socket->waitForReadyRead();
 		QByteArray data = m_socket->readAll();
 		m_messageReader.parse(data.constData(),data.count());
+	}
+	
+	if (m_messageReader.messageCount() < 1)
+	{
+		return false;
 	}
 
 	QByteArray responseData = m_messageReader.nextMessage();
