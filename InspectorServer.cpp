@@ -9,6 +9,8 @@
 #include <QtNetwork/QLocalSocket>
 #include <QtCore/QCoreApplication>
 
+#include <QtCore/QMetaProperty>
+
 InspectorServer::InspectorServer(QTextStream* log, QObject* parent)
 : QObject(parent)
 , m_log(log)
@@ -86,6 +88,14 @@ void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* me
 	message->set_id(id);
 	message->set_classname(object->metaObject()->className());
 	message->set_objectname(object->objectName().toStdString());
+
+	for (int i=0; i < object->metaObject()->propertyCount(); i++)
+	{
+		QMetaProperty property = object->metaObject()->property(i);
+		service::QtObject_PropertyValue* propertyMessage = message->add_property();
+		propertyMessage->set_name(property.name());
+		propertyMessage->set_value(property.read(object).toString().toStdString());
+	}
 
 	Q_FOREACH(QObject* child, object->children())
 	{
