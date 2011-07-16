@@ -184,10 +184,15 @@ bool TargetApplicationProxy::sendRequest(const service::InspectorRequest& reques
 	}
 	m_socket->waitForBytesWritten();
 
+	int maxDelay = 5000;
 	while (m_messageReader.messageCount() < 1 &&
 	       m_socket->state() == QLocalSocket::ConnectedState)
 	{
-		m_socket->waitForReadyRead();
+		if (!m_socket->waitForReadyRead(maxDelay))
+		{
+			qWarning() << "Failed to read response from process";
+			return false;
+		}
 		QByteArray data = m_socket->readAll();
 		m_messageReader.parse(data.constData(),data.count());
 	}
