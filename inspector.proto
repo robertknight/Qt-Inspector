@@ -1,0 +1,37 @@
+package service;
+
+message QtObject
+{
+	message PropertyValue 
+	{
+		required string name = 1;
+		optional string value = 2;
+	}
+
+	required int32 id = 1;
+	required string className = 2;
+	optional string objectName = 3;
+	repeated PropertyValue property = 4;
+	repeated int32 childId = 5;
+}
+
+message InspectorRequest 
+{
+	enum RequestType
+	{
+		FetchTopLevelWidgetsRequest = 1;
+		FetchObjectRequest = 2;
+	}
+
+	required RequestType type = 1;
+
+	optional int32 objectId = 2;
+}
+
+message InspectorResponse
+{
+	required InspectorRequest.RequestType request = 1;
+
+	repeated QtObject object = 2;
+}
+
