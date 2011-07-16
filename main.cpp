@@ -28,17 +28,11 @@ int main(int argc, char** argv)
 	{
 		qWarning() << "Failed to inject helper library into process <pid>";
 	}
-	QList<ObjectProxy*> objects = proxy.fetchTopLevelWidgets();
-	Q_FOREACH(ObjectProxy* proxy, objects)
-	{
-		qDebug() << "fetched object" << proxy->className() << proxy->objectName() << "with" <<
-		         proxy->children().count() << "children and" << proxy->properties().count() << "properties";
-	}
 
 	WidgetPicker* picker = new ExternalWidgetPicker(&proxy,0);
 
 	WidgetInspector inspector;
-	inspector.setRootObjects(objects);
+	inspector.setRootObjects(proxy.fetchTopLevelWidgets());
 	inspector.setWidgetPicker(picker);
 	inspector.show();
 
