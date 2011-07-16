@@ -1,3 +1,5 @@
+
+#include "ExternalWidgetPicker.h"
 #include "TargetApplicationProxy.h"
 #include "WidgetInspector.h"
 
@@ -33,8 +35,11 @@ int main(int argc, char** argv)
 		         proxy->children().count() << "children and" << proxy->properties().count() << "properties";
 	}
 
+	WidgetPicker* picker = new ExternalWidgetPicker(&proxy,0);
+
 	WidgetInspector inspector;
 	inspector.setRootObjects(objects);
+	inspector.setWidgetPicker(picker);
 	inspector.show();
 
 	return app.exec();

@@ -1,6 +1,7 @@
 
 #include "WidgetInspector.h"
 
+#include "DirectWidgetPicker.h"
 #include "ObjectInspector.h"
 #include "ObjectTreeModel.h"
 #include "OutOfProcessClipboard.h"
@@ -21,6 +22,7 @@
 
 WidgetInspector::WidgetInspector(QWidget* parent)
 : QWidget(parent)
+, m_picker(0)
 , m_externalClipboard(new OutOfProcessClipboard(this))
 {
 	setWindowTitle(tr("Widget Inspector"));
@@ -57,17 +59,15 @@ WidgetInspector::WidgetInspector(QWidget* parent)
 	connect(copyToDebuggerButton,SIGNAL(clicked()),
 	        this,SLOT(copyDebuggerReference()));
 
-	m_picker = new WidgetPicker(this);
-	connect(m_picker,SIGNAL(widgetPicked(QWidget*)),this,SLOT(pickerFinished(QWidget*)));
-	QPushButton* pickButton = new QPushButton(tr("Pick Widget"),this);
-	connect(pickButton,SIGNAL(clicked()),m_picker,SLOT(start()));
+	m_pickButton = new QPushButton(tr("Pick Widget"),this);
+	setWidgetPicker(new DirectWidgetPicker(this));
 
 	QPushButton* refreshButton = new QPushButton(tr("Refresh"),this);
 	connect(refreshButton,SIGNAL(clicked()),this,SLOT(resetModel()));
 
 	QHBoxLayout* actionLayout = new QHBoxLayout;
 	actionLayout->addStretch();
-	actionLayout->addWidget(pickButton);
+	actionLayout->addWidget(m_pickButton);
 	actionLayout->addWidget(copyToDebuggerButton);
 	actionLayout->addWidget(refreshButton);
 	layout->addLayout(actionLayout);
@@ -77,10 +77,10 @@ WidgetInspector::WidgetInspector(QWidget* parent)
 	resetModel();
 }
 
-void WidgetInspector::pickerFinished(QWidget* widget)
+void WidgetInspector::pickerFinished(ObjectProxy* widget)
 {
 	// TODO - Re-implement widget picker
-	//select(widget);
+	select(widget);
 }
 
 void WidgetInspector::copyDebuggerReference()
@@ -154,5 +154,14 @@ void WidgetInspector::registerGlobalShortcut(const QKeySequence& key, QWidget* p
 	WidgetInspectorShortcut* shortcut = new WidgetInspectorShortcut(parentWidget);
 	shortcut->setKey(key);
 	shortcut->setContext(Qt::ApplicationShortcut);
+}
+
+void WidgetInspector::setWidgetPicker(WidgetPicker* picker)
+{
+	delete m_picker;
+	picker->setParent(this);
+	m_picker = picker;
+	connect(m_picker,SIGNAL(widgetPicked(ObjectProxy*)),this,SLOT(pickerFinished(ObjectProxy*)));
+	connect(m_pickButton,SIGNAL(clicked()),m_picker,SLOT(start()));
 }
 

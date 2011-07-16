@@ -37,6 +37,7 @@ class InspectorServer : public QObject
                            service::InspectorResponse* response);
 		void updateObjectMessage(QObject* object, service::QtObject* message);
 		void updateObjectProperty(QObject* object, const service::QtObject_Property& property);
+		QObject* pickWidget();
 
 		QTextStream* m_log;
 		QLocalServer* m_server;

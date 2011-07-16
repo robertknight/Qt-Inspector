@@ -2,6 +2,8 @@
 
 #include <QtCore/QObject>
 
+class ObjectProxy;
+
 class WidgetPicker : public QObject
 {
 	Q_OBJECT
@@ -9,13 +11,11 @@ class WidgetPicker : public QObject
 	public:
 		WidgetPicker(QObject* parent);
 
-		virtual bool eventFilter(QObject* watched, QEvent* event);
-
 	public Q_SLOTS:
-		void start();
-		void cancel();
+		virtual void start() = 0;
+		virtual void cancel() = 0;
 
 	Q_SIGNALS:
-		void widgetPicked(QWidget* widget);
+		void widgetPicked(ObjectProxy* widget);
 };
 

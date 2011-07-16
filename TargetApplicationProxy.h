@@ -34,8 +34,10 @@ class TargetApplicationProxy : public QObject
 		QList<ObjectProxy*> fetchTopLevelWidgets();
 		ObjectProxy* fetchProxy(int objectId);
 		
+		// helpers to issue requests to the target process
 		bool fetchObject(ExternalObjectProxy* proxy);
 		void updateProperty(int objectId, const ObjectProxy::Property& property);
+		ObjectProxy* pickWidget();
 
 	private Q_SLOTS:
 		void socketError(QLocalSocket::LocalSocketError error);

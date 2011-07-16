@@ -23,6 +23,7 @@ message InspectorRequest
 		FetchTopLevelWidgetsRequest = 1;
 		FetchObjectRequest = 2;
 		WritePropertyRequest = 3;
+		PickWidgetRequest = 4;
 	}
 
 	required RequestType type = 1;

@@ -144,6 +144,27 @@ void TargetApplicationProxy::updateProperty(int objectId, const ObjectProxy::Pro
 	sendRequest(request,&response);
 }
 
+ObjectProxy* TargetApplicationProxy::pickWidget()
+{
+	service::InspectorRequest request;
+	service::InspectorResponse response;
+
+	request.set_type(service::InspectorRequest::PickWidgetRequest);
+	sendRequest(request,&response);
+
+	if (response.object_size() == 1)
+	{
+		service::QtObject object = response.object(0);
+		ExternalObjectProxy* proxy = dynamic_cast<ExternalObjectProxy*>(fetchProxy(object.id()));
+		updateProxy(object,proxy);
+		return proxy;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 bool TargetApplicationProxy::sendRequest(const service::InspectorRequest& request,
                                          service::InspectorResponse* response)
 {

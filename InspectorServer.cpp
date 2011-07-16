@@ -1,5 +1,6 @@
 #include "InspectorServer.h"
 
+#include "DirectWidgetPicker.h"
 #include "MessageWriter.h"
 #include "inspector.pb.h"
 
@@ -8,7 +9,7 @@
 #include <QtNetwork/QLocalServer>
 #include <QtNetwork/QLocalSocket>
 #include <QtCore/QCoreApplication>
-
+#include <QtCore/QEventLoop>
 #include <QtCore/QMetaProperty>
 
 InspectorServer::InspectorServer(QTextStream* log, QObject* parent)
@@ -112,6 +113,19 @@ void InspectorServer::updateObjectProperty(QObject* object, const service::QtObj
 	object->setProperty(name,value);
 }
 
+QObject* InspectorServer::pickWidget()
+{
+	DirectWidgetPicker directPicker(this);
+	directPicker.start();
+
+	QEventLoop eventLoop;
+	connect(&directPicker,SIGNAL(widgetPicked(ObjectProxy*)),
+	        &eventLoop,SLOT(quit()));
+	eventLoop.exec();
+
+	return directPicker.lastPicked();
+}
+
 void InspectorServer::handleRequest(const service::InspectorRequest& request,
                                     service::InspectorResponse* response)
 {
@@ -141,6 +155,12 @@ void InspectorServer::handleRequest(const service::InspectorRequest& request,
 				updateObjectProperty(object,request.propertyupdate());
 			}
 			break;
+		case service::InspectorRequest::PickWidgetRequest:
+			{
+				QObject* object = pickWidget();
+				service::QtObject* objectMessage = response->add_object();
+				updateObjectMessage(object,objectMessage);
+			}
 	};
 }
 

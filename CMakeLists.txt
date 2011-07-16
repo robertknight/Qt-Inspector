@@ -11,11 +11,11 @@ include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(
 	CLASSES
+	ExternalWidgetPicker
 	ObjectInspector
 	ObjectTreeModel
 	ObjectPropertyModel
 	OutOfProcessClipboard
-	WidgetPicker
 	WidgetInspector
 	WidgetInspectorShortcut
 	TargetApplicationProxy
@@ -46,10 +46,12 @@ target_link_libraries(
 )
 
 set(INSPECTOR_LIB_CLASSES
+	DirectWidgetPicker
 	MessageReader
 	MessageWriter
 	InspectorServer
 	ObjectIdMap
+	WidgetPicker
 )
 
 foreach(CLASS ${INSPECTOR_LIB_CLASSES})
