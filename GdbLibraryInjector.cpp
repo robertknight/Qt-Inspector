@@ -46,6 +46,10 @@ bool GdbLibraryInjector::inject(int pid, const QString& libraryPath, const QStri
 	QString flag_RTLD_NOW = QString::number(RTLD_NOW);
 	gdbStream << "call dlopen(\"" << libraryInfo.absoluteFilePath() << "\"," << flag_RTLD_NOW << ")\n";
 
+	// call dlerror() so that any problems loading the injected library
+	// are logged
+	gdbStream << "print ((char*)(dlerror()))\n";
+
 	// load symbols for the helper library so that the entry point can
 	// be invoked
 	gdbStream << "sharedlibrary " << libraryInfo.absoluteFilePath() << '\n';
