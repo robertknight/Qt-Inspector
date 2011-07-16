@@ -7,6 +7,7 @@
 class ObjectInspector;
 class ObjectTreeModel;
 class ObjectPropertyModel;
+class ObjectProxy;
 class OutOfProcessClipboard;
 class WidgetPicker;
 
@@ -20,6 +21,8 @@ class LIB_MENDELEY_EXPORT WidgetInspector : public QWidget
 	public:
 		WidgetInspector(QWidget* parent = 0);
 
+		void setRootObjects(const QList<ObjectProxy*>& roots);
+
 		static void registerGlobalShortcut(const QKeySequence& key, QWidget* parentWidget);
 
 	private Q_SLOTS:
@@ -30,7 +33,7 @@ class LIB_MENDELEY_EXPORT WidgetInspector : public QWidget
 		void copyDebuggerReference();
 
 	private:
-		void select(QObject* object);
+		void select(ObjectProxy* object);
 
 		ObjectTreeModel* m_objectModel;
 		QTreeView* m_objectTree;

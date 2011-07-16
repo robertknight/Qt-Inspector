@@ -82,3 +82,9 @@ bool ExternalObjectProxy::doLoad() const
 	return m_appProxy->fetchObject(const_cast<ExternalObjectProxy*>(this));
 }
 
+QHash<QString,QVariant> ExternalObjectProxy::properties() const
+{
+	doLoad();
+	return m_properties;
+}
+

@@ -3,6 +3,8 @@
 #include <QtGui/QStandardItemModel>
 #include <QtCore/QWeakPointer>
 
+class ObjectProxy;
+
 class ObjectPropertyModel : public QStandardItemModel
 {
 	Q_OBJECT
@@ -10,7 +12,7 @@ class ObjectPropertyModel : public QStandardItemModel
 	public:
 		ObjectPropertyModel(QObject* parent);
 
-		void setObject(QObject* object);
+		void setObject(ObjectProxy* object);
 
 		static QVariant toEditValue(const QVariant& value);
 
@@ -18,7 +20,7 @@ class ObjectPropertyModel : public QStandardItemModel
 		void updatePropertyValue(QStandardItem* item);
 
 	private:
-		QWeakPointer<QObject> m_object;
+		ObjectProxy* m_object;
 };
 
 

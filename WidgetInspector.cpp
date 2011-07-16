@@ -79,18 +79,19 @@ WidgetInspector::WidgetInspector(QWidget* parent)
 
 void WidgetInspector::pickerFinished(QWidget* widget)
 {
-	select(widget);
+	// TODO - Re-implement widget picker
+	//select(widget);
 }
 
 void WidgetInspector::copyDebuggerReference()
 {
-	QObject* object = m_objectInspector->object();
+	ObjectProxy* object = m_objectInspector->object();
 	if (!object)
 	{
 		return;
 	}
 	QString reference = QString("(%1*)(%2)")
-	  .arg(object->metaObject()->className())
+	  .arg(object->className())
 	  .arg(ObjectInspector::formatAddress(object));
 
 #ifdef Q_OS_LINUX
@@ -108,24 +109,32 @@ void WidgetInspector::selectionChanged(const QModelIndex& current, const QModelI
 
 void WidgetInspector::resetModel()
 {
-	QList<QObject*> objects;
-	Q_FOREACH(QObject* object, QApplication::topLevelWidgets())
+	// TODO - Re-implement me
+#if 0
+	QList<ObjectProxy*> objects;
+	Q_FOREACH(ObjectProxy* object, QApplication::topLevelWidgets())
 	{
 		objects << object;
 	}
+	m_objectModel->setRootObjects(objects);
+#endif
+}
+
+void WidgetInspector::setRootObjects(const QList<ObjectProxy*>& objects)
+{
 	m_objectModel->setRootObjects(objects);
 }
 
 void WidgetInspector::search(const QString& query)
 {
-	QList<QObject*> results = m_objectModel->search(query);
+	QList<ObjectProxy*> results = m_objectModel->search(query);
 	if (!results.isEmpty())
 	{
 		select(results.first());
 	}
 }
 
-void WidgetInspector::select(QObject* object)
+void WidgetInspector::select(ObjectProxy* object)
 {
 	QModelIndex index = m_objectModel->index(object);
 	if (!index.isValid())

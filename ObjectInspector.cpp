@@ -1,6 +1,7 @@
 #include "ObjectInspector.h"
 
 #include "ObjectPropertyModel.h"
+#include "ObjectProxy.h"
 
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
@@ -49,14 +50,14 @@ QString ObjectInspector::formatAddress(void* ptr)
 	return QString("0x%1").arg(QString(QByteArray::number(intPtr,16)));
 }
 
-void ObjectInspector::setObject(QObject* object)
+void ObjectInspector::setObject(ObjectProxy* object)
 {
 	QString labelText;
 	
 	if (object)
 	{
 		labelText = QString("%1 [%2] (%3)")
-		  .arg(object->metaObject()->className())
+		  .arg(object->className())
 		  .arg(object->objectName())
 		  .arg(formatAddress(object));
 	}
@@ -70,9 +71,9 @@ void ObjectInspector::setObject(QObject* object)
 	m_model->setObject(object);
 }
 
-QObject* ObjectInspector::object() const
+ObjectProxy* ObjectInspector::object() const
 {
-	return m_currentObject.data();
+	return m_currentObject;
 }
 
 void ObjectInspector::changeFilter(const QString& text)

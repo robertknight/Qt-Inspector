@@ -30,10 +30,11 @@ int main(int argc, char** argv)
 	Q_FOREACH(ObjectProxy* proxy, objects)
 	{
 		qDebug() << "fetched object" << proxy->className() << proxy->objectName() << "with" <<
-		         proxy->children().count() << "children";
+		         proxy->children().count() << "children and" << proxy->properties().count() << "properties";
 	}
 
 	WidgetInspector inspector;
+	inspector.setRootObjects(objects);
 	inspector.show();
 
 	return app.exec();

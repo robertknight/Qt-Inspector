@@ -1,5 +1,7 @@
 #include "ObjectPropertyModel.h"
 
+#include "ObjectProxy.h"
+
 #include <QtCore/QMetaProperty>
 #include <QtDebug>
 
@@ -43,11 +45,11 @@ void ObjectPropertyModel::updatePropertyValue(QStandardItem* item)
 	if (m_object)
 	{
 		QVariant newValue = item->data(Qt::EditRole);
-		m_object.data()->setProperty(propertyName.toLocal8Bit(),newValue);
+		m_object->writeProperty(propertyName.toLocal8Bit(),newValue);
 	}
 }
 
-void ObjectPropertyModel::setObject(QObject* object)
+void ObjectPropertyModel::setObject(ObjectProxy* object)
 {
 	clear();
 
@@ -59,22 +61,26 @@ void ObjectPropertyModel::setObject(QObject* object)
 
 	if (object)
 	{
-		const QMetaObject* metaObject = object->metaObject();
-		for (int i=0; i < metaObject->propertyCount(); i++)
+		int rowCount = 0;
+		QHashIterator<QString,QVariant> iter(object->properties());
+		while (iter.hasNext())
 		{
-			QMetaProperty property = metaObject->property(i);
-
-			QVariant value = property.read(object);
+			iter.next();
+			QVariant value = iter.value();
 			QVariant editValue = toEditValue(value);
 
-			QStandardItem* nameItem = new QStandardItem(property.name());
+			QStandardItem* nameItem = new QStandardItem(iter.key());
 			nameItem->setEditable(false);
 
 			QStandardItem* valueItem = new QStandardItem;
 			valueItem->setData(editValue,Qt::EditRole);
-			valueItem->setEditable(property.isWritable());
+			
+			// TODO - Get information about whether properties are
+			// writable from the target process
+			//valueItem->setEditable(property.isWritable());
 
-			insertRow(i,QList<QStandardItem*>() << nameItem << valueItem);
+			insertRow(rowCount,QList<QStandardItem*>() << nameItem << valueItem);
+			++rowCount;
 		}
 	}
 }

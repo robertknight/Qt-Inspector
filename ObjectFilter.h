@@ -2,7 +2,7 @@
 
 #include <QtCore/QString>
 
-class QObject;
+class ObjectProxy;
 class QWidget;
 
 class ObjectFilter
@@ -10,7 +10,7 @@ class ObjectFilter
 	public:
 
 		virtual ~ObjectFilter();
-		virtual bool accepts(QObject *object) const = 0;
+		virtual bool accepts(ObjectProxy *object) const = 0;
 		QString name() const;
 
 
@@ -26,5 +26,5 @@ class QWidgetFilter : public ObjectFilter
 	public:
 
 		QWidgetFilter();
-		bool accepts(QObject *object) const;
+		bool accepts(ObjectProxy *object) const;
 };

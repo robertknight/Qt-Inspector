@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QtGui/QWidget>
-#include <QtCore/QWeakPointer>
 
 class QLabel;
 class QLineEdit;
@@ -9,6 +8,7 @@ class QTableView;
 class QSortFilterProxyModel;
 
 class ObjectPropertyModel;
+class ObjectProxy;
 
 class ObjectInspector : public QWidget
 {
@@ -17,8 +17,8 @@ class ObjectInspector : public QWidget
 	public:
 		ObjectInspector(QWidget* parent);
 
-		void setObject(QObject* object);
-		QObject* object() const;
+		void setObject(ObjectProxy* object);
+		ObjectProxy* object() const;
 
 		static QString formatAddress(void* ptr);
 
@@ -28,7 +28,7 @@ class ObjectInspector : public QWidget
 	private:
 		QLabel* m_nameLabel;
 		QTableView* m_propertyView;
-		QWeakPointer<QObject> m_currentObject;
+		ObjectProxy* m_currentObject;
 		ObjectPropertyModel* m_model;
 		QSortFilterProxyModel* m_propertySortModel;
 		QLineEdit* m_propertyFilterEdit;

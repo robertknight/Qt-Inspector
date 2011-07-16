@@ -4,8 +4,6 @@
 
 #include <QtDebug>
 
-
-
 ObjectTreeModel::ObjectTreeModel(QObject* parent)
 : QAbstractItemModel(parent)
 , m_filter(0)
@@ -33,12 +31,12 @@ int ObjectTreeModel::rowCount(const QModelIndex& parent) const
 	return parentItem->children.count();
 }
 
-void ObjectTreeModel::setRootObjects(const QList<QObject*>& roots)
+void ObjectTreeModel::setRootObjects(const QList<ObjectProxy*>& roots)
 {
 	qDeleteAll(m_roots);
 	m_roots.clear();
 
-	Q_FOREACH(QObject* root, roots)
+	Q_FOREACH(ObjectProxy* root, roots)
 	{
 		if (! m_filter || m_filter->accepts(root))
 		{
@@ -50,12 +48,12 @@ void ObjectTreeModel::setRootObjects(const QList<QObject*>& roots)
 	reset();
 }
 
-QList<QObject*> ObjectTreeModel::rootObjects() const
+QList<ObjectProxy*> ObjectTreeModel::rootObjects() const
 {
-	QList<QObject*> objects;
+	QList<ObjectProxy*> objects;
 	Q_FOREACH(ObjectItem* item, m_roots)
 	{
-		objects << item->object.data();
+		objects << item->object;
 	}
 	return objects;
 }
@@ -128,7 +126,7 @@ QVariant ObjectTreeModel::data(const QModelIndex& index, int role) const
 		return QVariant();
 	}
 	
-	QObject* object = item->object.data();
+	ObjectProxy* object = item->object;
 
 	switch (role)
 	{
@@ -146,10 +144,10 @@ QVariant ObjectTreeModel::data(const QModelIndex& index, int role) const
 	}
 }
 
-QString ObjectTreeModel::displayText(QObject* object) const
+QString ObjectTreeModel::displayText(ObjectProxy* object) const
 {
 	QString text;
-	text += object->metaObject()->className();
+	text += object->className();
 
 	if (!object->objectName().isEmpty())
 	{
@@ -159,9 +157,9 @@ QString ObjectTreeModel::displayText(QObject* object) const
 	return text;
 }
 
-QObject* ObjectTreeModel::objectFromIndex(const QModelIndex& index)
+ObjectProxy* ObjectTreeModel::objectFromIndex(const QModelIndex& index)
 {
-	return itemFromIndex(index)->object.data();
+	return itemFromIndex(index)->object;
 }
 
 ObjectTreeModel::ObjectItem* ObjectTreeModel::itemFromIndex(const QModelIndex& index)
@@ -181,13 +179,13 @@ QVariant ObjectTreeModel::headerData(int section, Qt::Orientation orientation, i
 	}
 }
 
-ObjectTreeModel::ObjectItem* ObjectTreeModel::createItem(QObject* object, ObjectItem* parent, ObjectFilter *filter)
+ObjectTreeModel::ObjectItem* ObjectTreeModel::createItem(ObjectProxy* object, ObjectItem* parent, ObjectFilter *filter)
 {
 	ObjectItem* item = new ObjectItem;
 	item->parent = parent;
 	item->object = object;
 
-	Q_FOREACH(QObject* child, object->children())
+	Q_FOREACH(ObjectProxy* child, object->children())
 	{
 		if (! filter || filter->accepts(child))
 		{ 
@@ -198,11 +196,11 @@ ObjectTreeModel::ObjectItem* ObjectTreeModel::createItem(QObject* object, Object
 	return item;
 }
 
-ObjectTreeModel::ObjectItem* ObjectTreeModel::index(QObject* object, const QList<ObjectItem*>& items) const
+ObjectTreeModel::ObjectItem* ObjectTreeModel::index(ObjectProxy* object, const QList<ObjectItem*>& items) const
 {
 	Q_FOREACH(ObjectItem* item, items)
 	{
-		if (item->object.data() == object)
+		if (item->object == object)
 		{
 			return item;
 		}
@@ -216,7 +214,7 @@ ObjectTreeModel::ObjectItem* ObjectTreeModel::index(QObject* object, const QList
 	return 0;
 }
 
-QModelIndex ObjectTreeModel::index(QObject* object) const
+QModelIndex ObjectTreeModel::index(ObjectProxy* object) const
 {
 	ObjectItem* item = index(object,m_roots);
 	if (item)
@@ -229,14 +227,14 @@ QModelIndex ObjectTreeModel::index(QObject* object) const
 	}
 }
 
-bool ObjectTreeModel::matches(QObject* object, const QString& query) const
+bool ObjectTreeModel::matches(ObjectProxy* object, const QString& query) const
 {
 	return displayText(object).contains(query,Qt::CaseInsensitive);
 }
 
-void ObjectTreeModel::search(QList<QObject*>* hits, ObjectItem* item, const QString& query) const
+void ObjectTreeModel::search(QList<ObjectProxy*>* hits, ObjectItem* item, const QString& query) const
 {
-	QObject* object = item->object.data();
+	ObjectProxy* object = item->object;
 	if (!object)
 	{
 		return;
@@ -251,14 +249,14 @@ void ObjectTreeModel::search(QList<QObject*>* hits, ObjectItem* item, const QStr
 	}
 }
 
-QList<QObject*> ObjectTreeModel::search(const QString& query) const
+QList<ObjectProxy*> ObjectTreeModel::search(const QString& query) const
 {
 	if (query.isEmpty())
 	{
-		return QList<QObject*>();
+		return QList<ObjectProxy*>();
 	}
 
-	QList<QObject*> matches;
+	QList<ObjectProxy*> matches;
 	Q_FOREACH(ObjectItem* item, m_roots)
 	{
 		search(&matches,item,query);

@@ -22,8 +22,8 @@ QWidgetFilter::QWidgetFilter()
 {
 }
 
-bool QWidgetFilter::accepts(QObject *object) const
+bool QWidgetFilter::accepts(ObjectProxy* object) const
 {
-	QWidget* widget = qobject_cast<QWidget*>(object);
-	return (widget != 0);
+	// to-do - re-implement me with support for inheritance tests
+	return false;
 }

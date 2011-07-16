@@ -20,6 +20,7 @@ class ExternalObjectProxy : public ObjectProxy
 		virtual QString objectName() const;
 		virtual QVariant readProperty(const QString& name) const;
 		virtual void writeProperty(const QString& name, const QVariant& value);
+		virtual QHash<QString,QVariant> properties() const;
 		virtual QList<ObjectProxy*> children();
 
 	private:

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QtCore/QHash>
 #include <QtCore/QVariant>
 
 /** Base class representing an object.  Depending on the sub-class,
@@ -15,6 +16,7 @@ class ObjectProxy
 		virtual QString objectName() const = 0;
 		virtual QVariant readProperty(const QString& name) const = 0;
 		virtual void writeProperty(const QString& name, const QVariant& value) = 0;
+		virtual QHash<QString,QVariant> properties() const = 0;
 		virtual QList<ObjectProxy*> children() = 0;
 };
 
