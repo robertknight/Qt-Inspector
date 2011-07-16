@@ -6,6 +6,9 @@ find_package(Qt4 REQUIRED)
 set(QT_USE_QTNETWORK true)
 include(${QT_USE_FILE})
 
+find_package(Protobuf REQUIRED)
+include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+
 set(
 	CLASSES
 	ObjectInspector
@@ -27,6 +30,8 @@ endforeach()
 
 qt4_wrap_cpp(MOC_SOURCES ${HEADERS})
 
+protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS inspector.proto)
+
 add_executable(
 	qtinspector
 	main.cpp
@@ -34,12 +39,17 @@ add_executable(
 	${MOC_SOURCES}
 )
 
-target_link_libraries(qtinspector QtInspector ${QT_LIBRARIES})
+target_link_libraries(
+	qtinspector
+	QtInspector 
+	${QT_LIBRARIES}
+)
 
 set(INSPECTOR_LIB_CLASSES
 	MessageReader
 	MessageWriter
 	InspectorServer
+	ObjectIdMap
 )
 
 foreach(CLASS ${INSPECTOR_LIB_CLASSES})
@@ -55,6 +65,7 @@ add_library(
 	libmain.cpp
 	${INSPECTOR_LIB_SOURCES}
 	${INSPECTOR_LIB_MOC_SOURCES}
+	${PROTO_SOURCES}
 )
-target_link_libraries(QtInspector ${QT_LIBRARIES})
+target_link_libraries(QtInspector ${QT_LIBRARIES} ${PROTOBUF_LIBRARIES})
 

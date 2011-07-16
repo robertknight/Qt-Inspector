@@ -1,5 +1,10 @@
 #include "InspectorServer.h"
 
+#include "MessageWriter.h"
+#include "inspector.pb.h"
+
+#include <QtGui/QApplication>
+#include <QtGui/QWidget>
 #include <QtNetwork/QLocalServer>
 #include <QtNetwork/QLocalSocket>
 #include <QtCore/QCoreApplication>
@@ -18,6 +23,10 @@ InspectorServer::InspectorServer(QTextStream* log, QObject* parent)
 		*m_log << "Failed to listen on socket '" << name << "'"
 		       << " error: " << m_server->errorString() << '\n';
 	}
+	else
+	{
+		*m_log << "Started listening on socket " << name << '\n';
+	}
 }
 
 QString InspectorServer::socketName(int pid)
@@ -31,27 +40,83 @@ void InspectorServer::handleConnection()
 	QLocalSocket* socket = m_server->nextPendingConnection();
 	connect(socket,SIGNAL(readyRead()),
 	        this,SLOT(readyRead()));
+	if (socket->bytesAvailable() > 0)
+	{
+		readFromSocket(socket);
+	}
 }
 
 void InspectorServer::readyRead()
 {
 	QLocalSocket* socket = qobject_cast<QLocalSocket*>(sender());
+	readFromSocket(socket);
+}
+
+void InspectorServer::readFromSocket(QLocalSocket* socket)
+{
 	QByteArray data = socket->readAll();
 
 	*m_log << "received " << data.count() << " bytes\n";
-	*m_log << "received data '" << data << "'\n";
 	m_messageReader.parse(data.constData(),data.count());
+
+	*m_log << "have " << m_messageReader.messageCount() << " requests pending\n";
 
 	while (m_messageReader.messageCount() > 0)
 	{
 		QByteArray message = m_messageReader.nextMessage();
-		processMessage(message);
+
+		service::InspectorRequest request;
+		service::InspectorResponse response;
+
+		request.ParseFromArray(message.constData(),message.count());
+		handleRequest(request,&response);
+
+		QByteArray responseData(response.ByteSize(),0);
+		response.SerializeToArray(responseData.data(),responseData.count());
+
+		socket->write(MessageWriter::toMessage(responseData));
+
+		*m_log << "wrote " << responseData.count() << " bytes in response";
 	}
 }
 
-void InspectorServer::processMessage(const QByteArray& message)
+void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* message)
 {
-	*m_log << "received message: " << QString(message);
-	m_log->flush();
+	int id = m_objectMap.addObject(object);
+	message->set_id(id);
+	message->set_classname(object->metaObject()->className());
+	message->set_objectname(object->objectName().toStdString());
+
+	Q_FOREACH(QObject* child, object->children())
+	{
+		int childId = m_objectMap.addObject(child);
+		message->add_childid(childId);
+	}
+}
+
+void InspectorServer::handleRequest(const service::InspectorRequest& request,
+                                    service::InspectorResponse* response)
+{
+	response->set_request(request.type());
+	switch (request.type())
+	{
+		case service::InspectorRequest::FetchTopLevelWidgetsRequest:
+			{
+				QList<QWidget*> widgets = QApplication::topLevelWidgets();
+				Q_FOREACH(QObject* object, widgets)
+				{
+					service::QtObject* objectMessage = response->add_object();
+					updateObjectMessage(object,objectMessage);
+				}
+			}
+			break;
+		case service::InspectorRequest::FetchObjectRequest:
+			{
+				QObject* object = m_objectMap.getObject(request.objectid());
+				service::QtObject* objectMessage = response->add_object();
+				updateObjectMessage(object,objectMessage);
+			}
+			break;
+	};
 }
 

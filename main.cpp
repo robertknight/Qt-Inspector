@@ -1,6 +1,8 @@
 #include "TargetApplicationProxy.h"
 #include "WidgetInspector.h"
 
+#include "ObjectProxy.h"
+
 #include <QtGui/QApplication>
 
 #include <QtDebug>
@@ -20,9 +22,15 @@ int main(int argc, char** argv)
 	qDebug() << "connecting to app" << targetPid;
 
 	TargetApplicationProxy proxy;
-	if (!proxy.connect(targetPid))
+	if (!proxy.connectToTarget(targetPid))
 	{
 		qWarning() << "Failed to inject helper library into process <pid>";
+	}
+	QList<ObjectProxy*> objects = proxy.fetchTopLevelWidgets();
+	Q_FOREACH(ObjectProxy* proxy, objects)
+	{
+		qDebug() << "fetched object" << proxy->className() << proxy->objectName() << "with" <<
+		         proxy->children().count() << "children";
 	}
 
 	WidgetInspector inspector;

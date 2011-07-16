@@ -1,12 +1,21 @@
 #pragma once
 
 #include "MessageReader.h"
+#include "ObjectIdMap.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QObject>
 #include <QtCore/QTextStream>
 
 class QLocalServer;
+class QLocalSocket;
+
+namespace service
+{
+	class InspectorRequest;
+	class InspectorResponse;
+	class QtObject;
+};
 
 class InspectorServer : public QObject
 {
@@ -22,10 +31,14 @@ class InspectorServer : public QObject
 		void readyRead();
 
 	private:
-		void processMessage(const QByteArray& message);
+		void readFromSocket(QLocalSocket* socket);
+		void handleRequest(const service::InspectorRequest& request,
+                           service::InspectorResponse* response);
+		void updateObjectMessage(QObject* object, service::QtObject* message);
 
 		QTextStream* m_log;
 		QLocalServer* m_server;
 		MessageReader m_messageReader;
+		ObjectIdMap m_objectMap;
 };
 
