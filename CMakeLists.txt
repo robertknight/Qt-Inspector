@@ -1,0 +1,60 @@
+project("Qt Widget Inspector")
+
+cmake_minimum_required(VERSION 2.6)
+
+find_package(Qt4 REQUIRED)
+set(QT_USE_QTNETWORK true)
+include(${QT_USE_FILE})
+
+set(
+	CLASSES
+	ObjectInspector
+	ObjectTreeModel
+	ObjectPropertyModel
+	OutOfProcessClipboard
+	WidgetPicker
+	WidgetInspector
+	WidgetInspectorShortcut
+	TargetApplicationProxy
+	GdbLibraryInjector
+	ExternalObjectProxy
+)
+
+foreach(CLASS ${CLASSES})
+	set(SOURCES ${SOURCES} ${CLASS}.cpp)
+	set(HEADERS ${HEADERS} ${CLASS}.h)
+endforeach()
+
+qt4_wrap_cpp(MOC_SOURCES ${HEADERS})
+
+add_executable(
+	qtinspector
+	main.cpp
+	${SOURCES}
+	${MOC_SOURCES}
+)
+
+target_link_libraries(qtinspector QtInspector ${QT_LIBRARIES})
+
+set(INSPECTOR_LIB_CLASSES
+	MessageReader
+	MessageWriter
+	InspectorServer
+)
+
+foreach(CLASS ${INSPECTOR_LIB_CLASSES})
+	set(INSPECTOR_LIB_SOURCES ${INSPECTOR_LIB_SOURCES} ${CLASS}.cpp)
+	set(INSPECTOR_LIB_HEADERS ${INSPECTOR_LIB_HEADERS} ${CLASS}.h)
+endforeach()
+
+qt4_wrap_cpp(INSPECTOR_LIB_MOC_SOURCES ${INSPECTOR_LIB_HEADERS})
+
+add_library(
+	QtInspector
+	SHARED
+	libmain.cpp
+	${INSPECTOR_LIB_SOURCES}
+	${INSPECTOR_LIB_MOC_SOURCES}
+)
+target_link_libraries(QtInspector ${QT_LIBRARIES})
+
