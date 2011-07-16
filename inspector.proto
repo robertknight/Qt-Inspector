@@ -2,16 +2,17 @@ package service;
 
 message QtObject
 {
-	message PropertyValue 
+	message Property
 	{
 		required string name = 1;
-		optional string value = 2;
+		required bool isWritable = 2;
+		optional string value = 3;
 	}
 
 	required int32 id = 1;
 	required string className = 2;
 	optional string objectName = 3;
-	repeated PropertyValue property = 4;
+	repeated Property property = 4;
 	repeated int32 childId = 5;
 }
 

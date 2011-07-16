@@ -12,16 +12,16 @@ class ExternalObjectProxy : public ObjectProxy
 		int objectId() const;
 		void setClassName(const QString& className);
 		void setObjectName(const QString& objectName);
-		void setProperty(const QString& name, const QVariant& value);
 		void setChildIds(const QList<int>& children);
 		void setLoaded(bool loaded);
+		void addProperty(const Property& property);
+		void removeProperty(const QString& name);
 
 		virtual QString className() const;
 		virtual QString objectName() const;
-		virtual QVariant readProperty(const QString& name) const;
-		virtual void writeProperty(const QString& name, const QVariant& value);
-		virtual QHash<QString,QVariant> properties() const;
 		virtual QList<ObjectProxy*> children();
+		virtual QList<Property> properties() const;
+		virtual void writeProperty(const QString& name, const QVariant& value);
 
 	private:
 		bool doLoad() const;
@@ -32,7 +32,7 @@ class ExternalObjectProxy : public ObjectProxy
 
 		QString m_className;
 		QString m_objectName;
-		QHash<QString,QVariant> m_properties;
+		QList<Property> m_properties;
 		QList<int> m_childIds;
 
 };

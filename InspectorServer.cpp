@@ -92,9 +92,10 @@ void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* me
 	for (int i=0; i < object->metaObject()->propertyCount(); i++)
 	{
 		QMetaProperty property = object->metaObject()->property(i);
-		service::QtObject_PropertyValue* propertyMessage = message->add_property();
+		service::QtObject_Property* propertyMessage = message->add_property();
 		propertyMessage->set_name(property.name());
 		propertyMessage->set_value(property.read(object).toString().toStdString());
+		propertyMessage->set_iswritable(property.isWritable());
 	}
 
 	Q_FOREACH(QObject* child, object->children())

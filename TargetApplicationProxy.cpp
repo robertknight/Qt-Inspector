@@ -115,9 +115,11 @@ void TargetApplicationProxy::updateProxy(const service::QtObject& object, Extern
 	
 	for (int i=0; i < object.property_size(); i++)
 	{
-		QString propertyName = QString::fromStdString(object.property(i).name());
-		QVariant value = QVariant(QString::fromStdString(object.property(i).value()));
-		proxy->setProperty(propertyName,value);
+		ObjectProxy::Property property;
+		property.name = QString::fromStdString(object.property(i).name());
+		property.value = QVariant(QString::fromStdString(object.property(i).value()));
+		property.isWritable = object.property(i).iswritable();
+		proxy->addProperty(property);
 	}
 
 	QList<int> childIds;

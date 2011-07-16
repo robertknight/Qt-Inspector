@@ -29,9 +29,19 @@ void ExternalObjectProxy::setObjectName(const QString& objectName)
 	m_objectName = objectName;
 }
 
-void ExternalObjectProxy::setProperty(const QString& name, const QVariant& value)
+void ExternalObjectProxy::addProperty(const Property& property)
 {
-	m_properties.insert(name,value);
+	bool found = false;
+	QMutableListIterator<Property> iter(m_properties);
+	while (iter.hasNext())
+	{
+		if (iter.next().name == property.name)
+		{
+			iter.remove();
+		}
+	}
+
+	m_properties << property;
 }
 
 void ExternalObjectProxy::setChildIds(const QList<int>& childIds)
@@ -51,20 +61,24 @@ QString ExternalObjectProxy::objectName() const
 	return m_objectName;
 }
 
-QVariant ExternalObjectProxy::readProperty(const QString& name) const
-{
-	doLoad();
-	return m_properties.value(name);
-}
-
 void ExternalObjectProxy::writeProperty(const QString& name, const QVariant& value)
 {
 	doLoad();
-	m_properties.insert(name,value);
+
+	QMutableListIterator<Property> iter(m_properties);
+	while (iter.hasNext())
+	{
+		Property& property = iter.next();
+		if (property.name == name)
+		{
+			property.value == value;
+		}
+	}
 }
 
 QList<ObjectProxy*> ExternalObjectProxy::children()
 {
+	doLoad();
 	QList<ObjectProxy*> result;
 	Q_FOREACH(int childId, m_childIds)
 	{
@@ -82,7 +96,7 @@ bool ExternalObjectProxy::doLoad() const
 	return m_appProxy->fetchObject(const_cast<ExternalObjectProxy*>(this));
 }
 
-QHash<QString,QVariant> ExternalObjectProxy::properties() const
+QList<ObjectProxy::Property> ExternalObjectProxy::properties() const
 {
 	doLoad();
 	return m_properties;

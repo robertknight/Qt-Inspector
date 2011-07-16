@@ -62,22 +62,19 @@ void ObjectPropertyModel::setObject(ObjectProxy* object)
 	if (object)
 	{
 		int rowCount = 0;
-		QHashIterator<QString,QVariant> iter(object->properties());
+		QListIterator<ObjectProxy::Property> iter(object->properties());
 		while (iter.hasNext())
 		{
-			iter.next();
-			QVariant value = iter.value();
+			ObjectProxy::Property property = iter.next();
+			QVariant value = property.value;
 			QVariant editValue = toEditValue(value);
 
-			QStandardItem* nameItem = new QStandardItem(iter.key());
+			QStandardItem* nameItem = new QStandardItem(property.name);
 			nameItem->setEditable(false);
 
 			QStandardItem* valueItem = new QStandardItem;
 			valueItem->setData(editValue,Qt::EditRole);
-			
-			// TODO - Get information about whether properties are
-			// writable from the target process
-			//valueItem->setEditable(property.isWritable());
+			valueItem->setEditable(property.isWritable);
 
 			insertRow(rowCount,QList<QStandardItem*>() << nameItem << valueItem);
 			++rowCount;

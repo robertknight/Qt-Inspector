@@ -12,11 +12,22 @@ class ObjectProxy
 	public:
 		virtual ~ObjectProxy() {}
 
+		struct Property
+		{
+			Property()
+			: isWritable(false)
+			{
+			}
+
+			QString name;
+			QVariant value;
+			bool isWritable;
+		};
+
 		virtual QString className() const = 0;
 		virtual QString objectName() const = 0;
-		virtual QVariant readProperty(const QString& name) const = 0;
-		virtual void writeProperty(const QString& name, const QVariant& value) = 0;
-		virtual QHash<QString,QVariant> properties() const = 0;
 		virtual QList<ObjectProxy*> children() = 0;
+		virtual QList<Property> properties() const = 0;
+		virtual void writeProperty(const QString& name, const QVariant& value) = 0;
 };
 
