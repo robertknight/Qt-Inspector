@@ -13,7 +13,9 @@ void WidgetInspectorShortcut::showInspector()
 {
 	if (!m_inspector)
 	{
-		m_inspector = new WidgetInspector;
+		// TODO - Re-implement me for in-process usage
+		//m_inspector = new WidgetInspector;
+		m_inspector = 0;
 	}
 	m_inspector->show();
 }

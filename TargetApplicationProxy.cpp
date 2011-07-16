@@ -201,3 +201,8 @@ void TargetApplicationProxy::socketStateChanged(QLocalSocket::LocalSocketState s
 	qWarning() << "Local socket state changed" << state;
 }
 
+QList<ObjectProxy*> TargetApplicationProxy::rootObjects()
+{
+	return fetchTopLevelWidgets();
+}
+

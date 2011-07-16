@@ -5,6 +5,7 @@
 #include "ObjectInspector.h"
 #include "ObjectTreeModel.h"
 #include "OutOfProcessClipboard.h"
+#include "RootObjectList.h"
 #include "WidgetPicker.h"
 #include "WidgetInspectorShortcut.h"
 
@@ -20,8 +21,9 @@
 
 #include <QtDebug>
 
-WidgetInspector::WidgetInspector(QWidget* parent)
+WidgetInspector::WidgetInspector(RootObjectList* rootList, QWidget* parent)
 : QWidget(parent)
+, m_rootList(rootList)
 , m_picker(0)
 , m_externalClipboard(new OutOfProcessClipboard(this))
 {
@@ -109,20 +111,7 @@ void WidgetInspector::selectionChanged(const QModelIndex& current, const QModelI
 
 void WidgetInspector::resetModel()
 {
-	// TODO - Re-implement me
-#if 0
-	QList<ObjectProxy*> objects;
-	Q_FOREACH(ObjectProxy* object, QApplication::topLevelWidgets())
-	{
-		objects << object;
-	}
-	m_objectModel->setRootObjects(objects);
-#endif
-}
-
-void WidgetInspector::setRootObjects(const QList<ObjectProxy*>& objects)
-{
-	m_objectModel->setRootObjects(objects);
+	m_objectModel->setRootObjects(m_rootList->rootObjects());
 }
 
 void WidgetInspector::search(const QString& query)

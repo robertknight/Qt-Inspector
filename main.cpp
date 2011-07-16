@@ -31,8 +31,7 @@ int main(int argc, char** argv)
 
 	WidgetPicker* picker = new ExternalWidgetPicker(&proxy,0);
 
-	WidgetInspector inspector;
-	inspector.setRootObjects(proxy.fetchTopLevelWidgets());
+	WidgetInspector inspector(&proxy);
 	inspector.setWidgetPicker(picker);
 	inspector.show();
 

@@ -9,6 +9,7 @@ class ObjectTreeModel;
 class ObjectPropertyModel;
 class ObjectProxy;
 class OutOfProcessClipboard;
+class RootObjectList;
 class WidgetPicker;
 
 class QPushButton;
@@ -20,9 +21,7 @@ class LIB_MENDELEY_EXPORT WidgetInspector : public QWidget
 	Q_OBJECT
 
 	public:
-		WidgetInspector(QWidget* parent = 0);
-
-		void setRootObjects(const QList<ObjectProxy*>& roots);
+		WidgetInspector(RootObjectList* rootList, QWidget* parent = 0);
 
 		/** Sets the picker used by the 'Pick Widget' button
 		  * to select a widget in the application by clicking on it.
@@ -43,6 +42,7 @@ class LIB_MENDELEY_EXPORT WidgetInspector : public QWidget
 	private:
 		void select(ObjectProxy* object);
 
+		RootObjectList* m_rootList;
 		ObjectTreeModel* m_objectModel;
 		QTreeView* m_objectTree;
 		WidgetPicker* m_picker;

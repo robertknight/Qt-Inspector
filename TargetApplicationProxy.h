@@ -2,6 +2,7 @@
 
 #include "MessageReader.h"
 #include "ObjectProxy.h"
+#include "RootObjectList.h"
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>
@@ -20,7 +21,7 @@ namespace service
 }
 
 /** Represents an external Qt process. */
-class TargetApplicationProxy : public QObject
+class TargetApplicationProxy : public QObject , public RootObjectList
 {
 	Q_OBJECT
 
@@ -38,6 +39,11 @@ class TargetApplicationProxy : public QObject
 		bool fetchObject(ExternalObjectProxy* proxy);
 		void updateProperty(int objectId, const ObjectProxy::Property& property);
 		ObjectProxy* pickWidget();
+
+		// implements RootObjectList
+
+		/** Same as fetchTopLevelWidgets() */
+		QList<ObjectProxy*> rootObjects();
 
 	private Q_SLOTS:
 		void socketError(QLocalSocket::LocalSocketError error);
