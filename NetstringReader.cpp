@@ -30,6 +30,7 @@ void NetstringReader::parse(const char* data, int length)
 							m_bodyLength = m_header.toInt(&ok);
 							m_header.clear();
 							m_state = ParseBody;
+							m_body.reserve(m_bodyLength);
 							++bytesRead;
 							break;
 						}
