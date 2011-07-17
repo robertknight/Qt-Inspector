@@ -43,7 +43,7 @@ class TargetApplicationProxy : public QObject , public RootObjectList
 		// implements RootObjectList
 
 		/** Same as fetchTopLevelWidgets() */
-		QList<ObjectProxy*> rootObjects();
+		virtual QList<ObjectProxy*> rootObjects();
 
 	private Q_SLOTS:
 		void socketError(QLocalSocket::LocalSocketError error);
