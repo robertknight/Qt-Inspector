@@ -18,7 +18,8 @@ class MessageReader
 		enum State
 		{
 			ParseHeader,
-			ParseBody
+			ParseBody,
+			ParseTrailer
 		};
 		QList<QByteArray> m_messages;
 

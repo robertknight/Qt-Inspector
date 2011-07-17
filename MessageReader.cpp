@@ -24,7 +24,7 @@ void MessageReader::parse(const char* data, int length)
 				{
 					for (;bytesRead < length; bytesRead++)
 					{
-						if (data[bytesRead] == '\n')
+						if (data[bytesRead] == ':')
 						{
 							bool ok = false;
 							m_bodyLength = m_header.toInt(&ok);
@@ -47,10 +47,27 @@ void MessageReader::parse(const char* data, int length)
 						m_body.append(data[bytesRead]);
 						if (m_body.length() == m_bodyLength)
 						{
+							m_state = ParseTrailer;	
+							++bytesRead;
+							break;
+						}
+					}
+				}
+			case ParseTrailer:
+				{
+					if (bytesRead < length)
+					{
+						if (data[bytesRead] == ',')
+						{
 							m_messages << m_body;
 							++bytesRead;
 							reset();
-							break;
+						}
+						else
+						{
+							// malformed message
+							m_body.clear();
+							reset();
 						}
 					}
 				}
