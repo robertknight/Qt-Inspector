@@ -116,7 +116,8 @@ void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* me
 void InspectorServer::updateObjectProperty(QObject* object, const service::QtObject_Property& property)
 {
 	const char* name = property.name().c_str();
-	QVariant value = QString::fromStdString(property.value());
+	QByteArray valueBuffer(property.value().c_str(),property.value().size());
+	QVariant value = VariantSerializer::decode(valueBuffer);
 	object->setProperty(name,value);
 }
 

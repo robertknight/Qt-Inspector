@@ -142,7 +142,9 @@ void TargetApplicationProxy::updateProperty(int objectId, const ObjectProxy::Pro
 	request.set_type(service::InspectorRequest::WritePropertyRequest);
 	request.set_objectid(objectId);
 	request.mutable_propertyupdate()->set_name(property.name.toStdString());
-	request.mutable_propertyupdate()->set_value(property.value.toString().toStdString());
+
+	QByteArray valueBuffer = VariantSerializer::encode(property.value);
+	request.mutable_propertyupdate()->set_value(std::string(valueBuffer.constData(),valueBuffer.count()));
 	request.mutable_propertyupdate()->set_iswritable(true);
 
 	sendRequest(request,&response);
