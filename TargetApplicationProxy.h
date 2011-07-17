@@ -32,18 +32,18 @@ class TargetApplicationProxy : public QObject , public RootObjectList
 		void disconnect();
 
 		/** Return a list of top-level widgets in the application. */
-		QList<ObjectProxy*> fetchTopLevelWidgets();
-		ObjectProxy* fetchProxy(int objectId);
+		QList<ObjectProxy::Pointer> fetchTopLevelWidgets();
+		ObjectProxy::Pointer fetchProxy(int objectId);
 		
 		// helpers to issue requests to the target process
 		bool fetchObject(ExternalObjectProxy* proxy);
 		void updateProperty(int objectId, const ObjectProxy::Property& property);
-		ObjectProxy* pickWidget();
+		ObjectProxy::Pointer pickWidget();
 
 		// implements RootObjectList
 
 		/** Same as fetchTopLevelWidgets() */
-		virtual QList<ObjectProxy*> rootObjects();
+		virtual QList<ObjectProxy::Pointer> rootObjects();
 
 	private Q_SLOTS:
 		void socketError(QLocalSocket::LocalSocketError error);
@@ -55,7 +55,7 @@ class TargetApplicationProxy : public QObject , public RootObjectList
                          service::InspectorResponse* response);
 
 		QLocalSocket* m_socket;
-		QHash<int,ExternalObjectProxy*> m_objectProxies;
+		QHash<int,ObjectProxy::Pointer> m_objectProxies;
 		NetstringReader m_messageReader;
 };
 

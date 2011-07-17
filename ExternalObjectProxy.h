@@ -29,7 +29,7 @@ class ExternalObjectProxy : public ObjectProxy
 		virtual quintptr address() const;
 		virtual QString className() const;
 		virtual QString objectName() const;
-		virtual QList<ObjectProxy*> children();
+		virtual QList<ObjectProxy::Pointer> children();
 		virtual QList<Property> properties() const;
 		virtual void writeProperty(const QString& name, const QVariant& value);
 

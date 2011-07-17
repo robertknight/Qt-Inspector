@@ -31,12 +31,12 @@ int ObjectTreeModel::rowCount(const QModelIndex& parent) const
 	return parentItem->children.count();
 }
 
-void ObjectTreeModel::setRootObjects(const QList<ObjectProxy*>& roots)
+void ObjectTreeModel::setRootObjects(const QList<ObjectProxy::Pointer>& roots)
 {
 	qDeleteAll(m_roots);
 	m_roots.clear();
 
-	Q_FOREACH(ObjectProxy* root, roots)
+	Q_FOREACH(ObjectProxy::Pointer root, roots)
 	{
 		if (! m_filter || m_filter->accepts(root))
 		{
@@ -48,9 +48,9 @@ void ObjectTreeModel::setRootObjects(const QList<ObjectProxy*>& roots)
 	reset();
 }
 
-QList<ObjectProxy*> ObjectTreeModel::rootObjects() const
+QList<ObjectProxy::Pointer> ObjectTreeModel::rootObjects() const
 {
-	QList<ObjectProxy*> objects;
+	QList<ObjectProxy::Pointer> objects;
 	Q_FOREACH(ObjectItem* item, m_roots)
 	{
 		objects << item->object;
@@ -126,7 +126,7 @@ QVariant ObjectTreeModel::data(const QModelIndex& index, int role) const
 		return QVariant();
 	}
 	
-	ObjectProxy* object = item->object;
+	ObjectProxy::Pointer object = item->object;
 
 	switch (role)
 	{
@@ -144,7 +144,7 @@ QVariant ObjectTreeModel::data(const QModelIndex& index, int role) const
 	}
 }
 
-QString ObjectTreeModel::displayText(ObjectProxy* object) const
+QString ObjectTreeModel::displayText(ObjectProxy::Pointer object) const
 {
 	QString text;
 	text += object->className();
@@ -157,7 +157,7 @@ QString ObjectTreeModel::displayText(ObjectProxy* object) const
 	return text;
 }
 
-ObjectProxy* ObjectTreeModel::objectFromIndex(const QModelIndex& index)
+ObjectProxy::Pointer ObjectTreeModel::objectFromIndex(const QModelIndex& index)
 {
 	return itemFromIndex(index)->object;
 }
@@ -179,13 +179,13 @@ QVariant ObjectTreeModel::headerData(int section, Qt::Orientation orientation, i
 	}
 }
 
-ObjectTreeModel::ObjectItem* ObjectTreeModel::createItem(ObjectProxy* object, ObjectItem* parent, ObjectFilter *filter)
+ObjectTreeModel::ObjectItem* ObjectTreeModel::createItem(ObjectProxy::Pointer object, ObjectItem* parent, ObjectFilter *filter)
 {
 	ObjectItem* item = new ObjectItem;
 	item->parent = parent;
 	item->object = object;
 
-	Q_FOREACH(ObjectProxy* child, object->children())
+	Q_FOREACH(ObjectProxy::Pointer child, object->children())
 	{
 		if (! filter || filter->accepts(child))
 		{ 
@@ -196,7 +196,7 @@ ObjectTreeModel::ObjectItem* ObjectTreeModel::createItem(ObjectProxy* object, Ob
 	return item;
 }
 
-ObjectTreeModel::ObjectItem* ObjectTreeModel::index(ObjectProxy* object, const QList<ObjectItem*>& items) const
+ObjectTreeModel::ObjectItem* ObjectTreeModel::index(ObjectProxy::Pointer object, const QList<ObjectItem*>& items) const
 {
 	Q_FOREACH(ObjectItem* item, items)
 	{
@@ -214,7 +214,7 @@ ObjectTreeModel::ObjectItem* ObjectTreeModel::index(ObjectProxy* object, const Q
 	return 0;
 }
 
-QModelIndex ObjectTreeModel::index(ObjectProxy* object) const
+QModelIndex ObjectTreeModel::index(ObjectProxy::Pointer object) const
 {
 	ObjectItem* item = index(object,m_roots);
 	if (item)
@@ -227,14 +227,14 @@ QModelIndex ObjectTreeModel::index(ObjectProxy* object) const
 	}
 }
 
-bool ObjectTreeModel::matches(ObjectProxy* object, const QString& query) const
+bool ObjectTreeModel::matches(ObjectProxy::Pointer object, const QString& query) const
 {
 	return displayText(object).contains(query,Qt::CaseInsensitive);
 }
 
-void ObjectTreeModel::search(QList<ObjectProxy*>* hits, ObjectItem* item, const QString& query) const
+void ObjectTreeModel::search(QList<ObjectProxy::Pointer>* hits, ObjectItem* item, const QString& query) const
 {
-	ObjectProxy* object = item->object;
+	ObjectProxy::Pointer object = item->object;
 	if (!object)
 	{
 		return;
@@ -249,14 +249,14 @@ void ObjectTreeModel::search(QList<ObjectProxy*>* hits, ObjectItem* item, const 
 	}
 }
 
-QList<ObjectProxy*> ObjectTreeModel::search(const QString& query) const
+QList<ObjectProxy::Pointer> ObjectTreeModel::search(const QString& query) const
 {
 	if (query.isEmpty())
 	{
-		return QList<ObjectProxy*>();
+		return QList<ObjectProxy::Pointer>();
 	}
 
-	QList<ObjectProxy*> matches;
+	QList<ObjectProxy::Pointer> matches;
 	Q_FOREACH(ObjectItem* item, m_roots)
 	{
 		search(&matches,item,query);

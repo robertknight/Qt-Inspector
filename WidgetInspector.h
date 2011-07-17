@@ -1,13 +1,13 @@
 #pragma once
 
 #include "libMendeleyExport.h"
+#include "ObjectProxy.h"
 
 #include <QtGui/QWidget>
 
 class ObjectInspector;
 class ObjectTreeModel;
 class ObjectPropertyModel;
-class ObjectProxy;
 class OutOfProcessClipboard;
 class RootObjectList;
 class WidgetPicker;
@@ -35,12 +35,12 @@ class LIB_MENDELEY_EXPORT WidgetInspector : public QWidget
 	private Q_SLOTS:
 		void resetModel();
 		void search(const QString& query);
-		void pickerFinished(ObjectProxy* widget);
+		void pickerFinished(ObjectProxy::Pointer widget);
 		void selectionChanged(const QModelIndex& current, const QModelIndex& previous);
 		void copyDebuggerReference();
 
 	private:
-		void select(ObjectProxy* object);
+		void select(ObjectProxy::Pointer object);
 
 		RootObjectList* m_rootList;
 		ObjectTreeModel* m_objectModel;

@@ -1,8 +1,9 @@
 #pragma once
 
+#include "ObjectProxy.h"
+
 #include <QtCore/QString>
 
-class ObjectProxy;
 class QWidget;
 
 class ObjectFilter
@@ -10,7 +11,7 @@ class ObjectFilter
 	public:
 
 		virtual ~ObjectFilter();
-		virtual bool accepts(ObjectProxy *object) const = 0;
+		virtual bool accepts(ObjectProxy::Pointer object) const = 0;
 		QString name() const;
 
 
@@ -24,7 +25,6 @@ class ObjectFilter
 class QWidgetFilter : public ObjectFilter
 {
 	public:
-
 		QWidgetFilter();
-		bool accepts(ObjectProxy *object) const;
+		bool accepts(ObjectProxy::Pointer object) const;
 };

@@ -43,12 +43,12 @@ void TargetApplicationProxy::disconnect()
 	m_socket->disconnectFromServer();
 }
 
-QList<ObjectProxy*> TargetApplicationProxy::fetchTopLevelWidgets()
+QList<ObjectProxy::Pointer> TargetApplicationProxy::fetchTopLevelWidgets()
 {
 	service::InspectorRequest request;
 	service::InspectorResponse response;
 
-	QList<ObjectProxy*> objects;
+	QList<ObjectProxy::Pointer> objects;
 
 	request.set_type(service::InspectorRequest::FetchTopLevelWidgetsRequest);
 	if (!sendRequest(request,&response))
@@ -60,22 +60,22 @@ QList<ObjectProxy*> TargetApplicationProxy::fetchTopLevelWidgets()
 	for (int i=0; i < response.object_size(); i++)
 	{
 		int id = response.object(i).id();
-		ExternalObjectProxy* proxy = dynamic_cast<ExternalObjectProxy*>(fetchProxy(id));
-		updateProxy(response.object(i),proxy);
+		ObjectProxy::Pointer proxy = fetchProxy(id);
+		updateProxy(response.object(i),proxy.dynamicCast<ExternalObjectProxy>().data());
 		objects << proxy;
 	}
 
 	return objects;
 }
 
-ObjectProxy* TargetApplicationProxy::fetchProxy(int objectId)
+ObjectProxy::Pointer TargetApplicationProxy::fetchProxy(int objectId)
 {
-	ExternalObjectProxy* proxy = m_objectProxies.value(objectId);
+	ExternalObjectProxy::Pointer proxy = m_objectProxies.value(objectId);
 	if (proxy)
 	{
 		return proxy;
 	}
-	proxy = new ExternalObjectProxy(this,objectId);
+	proxy = ObjectProxy::Pointer(new ExternalObjectProxy(this,objectId));
 	m_objectProxies.insert(objectId,proxy);
 	return proxy;
 }
@@ -145,7 +145,7 @@ void TargetApplicationProxy::updateProperty(int objectId, const ObjectProxy::Pro
 	sendRequest(request,&response);
 }
 
-ObjectProxy* TargetApplicationProxy::pickWidget()
+ObjectProxy::Pointer TargetApplicationProxy::pickWidget()
 {
 	service::InspectorRequest request;
 	service::InspectorResponse response;
@@ -156,13 +156,13 @@ ObjectProxy* TargetApplicationProxy::pickWidget()
 	if (response.object_size() == 1)
 	{
 		service::QtObject object = response.object(0);
-		ExternalObjectProxy* proxy = dynamic_cast<ExternalObjectProxy*>(fetchProxy(object.id()));
-		updateProxy(object,proxy);
+		ObjectProxy::Pointer proxy = fetchProxy(object.id());
+		updateProxy(object,proxy.dynamicCast<ExternalObjectProxy>().data());
 		return proxy;
 	}
 	else
 	{
-		return 0;
+		return ObjectProxy::Pointer();
 	}
 }
 
@@ -217,7 +217,7 @@ void TargetApplicationProxy::socketStateChanged(QLocalSocket::LocalSocketState s
 	qWarning() << "Local socket state changed" << state;
 }
 
-QList<ObjectProxy*> TargetApplicationProxy::rootObjects()
+QList<ObjectProxy::Pointer> TargetApplicationProxy::rootObjects()
 {
 	return fetchTopLevelWidgets();
 }

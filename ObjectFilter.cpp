@@ -22,7 +22,7 @@ QWidgetFilter::QWidgetFilter()
 {
 }
 
-bool QWidgetFilter::accepts(ObjectProxy* object) const
+bool QWidgetFilter::accepts(ObjectProxy::Pointer object) const
 {
 	// to-do - re-implement me with support for inheritance tests
 	return false;

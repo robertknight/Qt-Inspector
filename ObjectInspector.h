@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ObjectProxy.h"
+
 #include <QtGui/QWidget>
 
 class QLabel;
@@ -8,7 +10,6 @@ class QTableView;
 class QSortFilterProxyModel;
 
 class ObjectPropertyModel;
-class ObjectProxy;
 
 class ObjectInspector : public QWidget
 {
@@ -17,8 +18,8 @@ class ObjectInspector : public QWidget
 	public:
 		ObjectInspector(QWidget* parent);
 
-		void setObject(ObjectProxy* object);
-		ObjectProxy* object() const;
+		void setObject(ObjectProxy::Pointer object);
+		ObjectProxy::Pointer object() const;
 
 		static QString formatAddress(void* ptr);
 
@@ -28,7 +29,7 @@ class ObjectInspector : public QWidget
 	private:
 		QLabel* m_nameLabel;
 		QTableView* m_propertyView;
-		ObjectProxy* m_currentObject;
+		ObjectProxy::Pointer m_currentObject;
 		ObjectPropertyModel* m_model;
 		QSortFilterProxyModel* m_propertySortModel;
 		QLineEdit* m_propertyFilterEdit;

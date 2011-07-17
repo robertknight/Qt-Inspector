@@ -8,7 +8,7 @@ ExternalWidgetPicker::ExternalWidgetPicker(TargetApplicationProxy* appProxy, QOb
 
 void ExternalWidgetPicker::start()
 {
-	ObjectProxy* proxy = m_appProxy->pickWidget();
+	ObjectProxy::Pointer proxy = m_appProxy->pickWidget();
 	emit widgetPicked(proxy);
 }
 

@@ -9,7 +9,7 @@ ObjectPropertyModel::ObjectPropertyModel(QObject* parent)
 : QStandardItemModel(parent)
 {
 	setColumnCount(2);
-	setObject(0);
+	setObject(ObjectProxy::Pointer());
 
 	connect(this,SIGNAL(itemChanged(QStandardItem*)),
 	        this,SLOT(updatePropertyValue(QStandardItem*)));
@@ -50,7 +50,7 @@ void ObjectPropertyModel::updatePropertyValue(QStandardItem* item)
 	}
 }
 
-void ObjectPropertyModel::setObject(ObjectProxy* object)
+void ObjectPropertyModel::setObject(ObjectProxy::Pointer object)
 {
 	clear();
 

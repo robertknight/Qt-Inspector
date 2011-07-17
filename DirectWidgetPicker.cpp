@@ -34,7 +34,7 @@ bool DirectWidgetPicker::eventFilter(QObject* watched, QEvent* event)
 		QWidget* widget = static_cast<QWidget*>(watched);
 		m_lastPicked = widget;
 		//emit widgetPicked(widget);
-		emit widgetPicked(0);
+		emit widgetPicked(ObjectProxy::Pointer());
 
 		cancel();
 		return true;

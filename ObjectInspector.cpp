@@ -41,7 +41,7 @@ ObjectInspector::ObjectInspector(QWidget* parent)
 	layout->addWidget(m_propertyView);
 	layout->addLayout(filterLayout);
 
-	setObject(0);
+	setObject(ObjectProxy::Pointer());
 }
 
 QString ObjectInspector::formatAddress(void* ptr)
@@ -50,7 +50,7 @@ QString ObjectInspector::formatAddress(void* ptr)
 	return QString("0x%1").arg(QString(QByteArray::number(intPtr,16)));
 }
 
-void ObjectInspector::setObject(ObjectProxy* object)
+void ObjectInspector::setObject(ObjectProxy::Pointer object)
 {
 	QString labelText;
 	
@@ -71,7 +71,7 @@ void ObjectInspector::setObject(ObjectProxy* object)
 	m_model->setObject(object);
 }
 
-ObjectProxy* ObjectInspector::object() const
+ObjectProxy::Pointer ObjectInspector::object() const
 {
 	return m_currentObject;
 }

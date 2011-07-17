@@ -2,6 +2,7 @@
 
 #include <QtCore/QHash>
 #include <QtCore/QVariant>
+#include <QtCore/QSharedPointer>
 
 /** Base class representing an object.  Depending on the sub-class,
   * the object may live in the same process or may
@@ -10,6 +11,8 @@
 class ObjectProxy
 {
 	public:
+		typedef QSharedPointer<ObjectProxy> Pointer;
+
 		virtual ~ObjectProxy() {}
 
 		struct Property
@@ -34,7 +37,7 @@ class ObjectProxy
 		virtual QString objectName() const = 0;
 
 		/** Returns a list of proxies representing the child objects of this QObject. */
-		virtual QList<ObjectProxy*> children() = 0;
+		virtual QList<ObjectProxy::Pointer> children() = 0;
 
 		/** Returns a list of properties and their current values in the object. */
 		virtual QList<Property> properties() const = 0;

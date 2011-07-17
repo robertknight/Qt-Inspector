@@ -81,10 +81,10 @@ void ExternalObjectProxy::writeProperty(const QString& name, const QVariant& val
 	m_appProxy->updateProperty(m_objectId,updatedProperty);
 }
 
-QList<ObjectProxy*> ExternalObjectProxy::children()
+QList<ObjectProxy::Pointer> ExternalObjectProxy::children()
 {
 	doLoad();
-	QList<ObjectProxy*> result;
+	QList<ObjectProxy::Pointer> result;
 	Q_FOREACH(int childId, m_childIds)
 	{
 		result << m_appProxy->fetchProxy(childId);

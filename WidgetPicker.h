@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QtCore/QObject>
+#include "ObjectProxy.h"
 
-class ObjectProxy;
+#include <QtCore/QObject>
 
 class WidgetPicker : public QObject
 {
@@ -16,6 +16,6 @@ class WidgetPicker : public QObject
 		virtual void cancel() = 0;
 
 	Q_SIGNALS:
-		void widgetPicked(ObjectProxy* widget);
+		void widgetPicked(ObjectProxy::Pointer widget);
 };
 

@@ -79,7 +79,7 @@ WidgetInspector::WidgetInspector(RootObjectList* rootList, QWidget* parent)
 	resetModel();
 }
 
-void WidgetInspector::pickerFinished(ObjectProxy* widget)
+void WidgetInspector::pickerFinished(ObjectProxy::Pointer widget)
 {
 	// TODO - Re-implement widget picker
 	select(widget);
@@ -87,14 +87,16 @@ void WidgetInspector::pickerFinished(ObjectProxy* widget)
 
 void WidgetInspector::copyDebuggerReference()
 {
-	ObjectProxy* object = m_objectInspector->object();
+	ObjectProxy::Pointer object = m_objectInspector->object();
 	if (!object)
 	{
 		return;
 	}
+
+	void* address = reinterpret_cast<void*>(object->address());
 	QString reference = QString("(%1*)(%2)")
 	  .arg(object->className())
-	  .arg(ObjectInspector::formatAddress(object));
+	  .arg(ObjectInspector::formatAddress(address));
 
 #ifdef Q_OS_LINUX
 	m_externalClipboard->setText(reference);
@@ -116,14 +118,14 @@ void WidgetInspector::resetModel()
 
 void WidgetInspector::search(const QString& query)
 {
-	QList<ObjectProxy*> results = m_objectModel->search(query);
+	QList<ObjectProxy::Pointer> results = m_objectModel->search(query);
 	if (!results.isEmpty())
 	{
 		select(results.first());
 	}
 }
 
-void WidgetInspector::select(ObjectProxy* object)
+void WidgetInspector::select(ObjectProxy::Pointer object)
 {
 	QModelIndex index = m_objectModel->index(object);
 	if (!index.isValid())
@@ -150,7 +152,7 @@ void WidgetInspector::setWidgetPicker(WidgetPicker* picker)
 	delete m_picker;
 	picker->setParent(this);
 	m_picker = picker;
-	connect(m_picker,SIGNAL(widgetPicked(ObjectProxy*)),this,SLOT(pickerFinished(ObjectProxy*)));
+	connect(m_picker,SIGNAL(widgetPicked(ObjectProxy::Pointer)),this,SLOT(pickerFinished(ObjectProxy::Pointer)));
 	connect(m_pickButton,SIGNAL(clicked()),m_picker,SLOT(start()));
 }
 

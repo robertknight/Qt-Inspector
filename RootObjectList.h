@@ -8,6 +8,6 @@
 class RootObjectList
 {
 	public:
-		virtual QList<ObjectProxy*> rootObjects() = 0;
+		virtual QList<ObjectProxy::Pointer> rootObjects() = 0;
 };
 

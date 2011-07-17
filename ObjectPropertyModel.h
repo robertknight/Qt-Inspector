@@ -1,9 +1,9 @@
 #pragma once
 
+#include "ObjectProxy.h"
+
 #include <QtGui/QStandardItemModel>
 #include <QtCore/QWeakPointer>
-
-class ObjectProxy;
 
 class ObjectPropertyModel : public QStandardItemModel
 {
@@ -12,7 +12,7 @@ class ObjectPropertyModel : public QStandardItemModel
 	public:
 		ObjectPropertyModel(QObject* parent);
 
-		void setObject(ObjectProxy* object);
+		void setObject(ObjectProxy::Pointer object);
 
 		static QVariant toEditValue(const QVariant& value);
 
@@ -20,7 +20,7 @@ class ObjectPropertyModel : public QStandardItemModel
 		void updatePropertyValue(QStandardItem* item);
 
 	private:
-		ObjectProxy* m_object;
+		ObjectProxy::Pointer m_object;
 };
 
 
