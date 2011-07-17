@@ -3,6 +3,7 @@
 #include "DirectWidgetPicker.h"
 #include "NetstringWriter.h"
 #include "inspector.pb.h"
+#include "VariantSerializer.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QWidget>
@@ -11,6 +12,9 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QEventLoop>
 #include <QtCore/QMetaProperty>
+
+#include <QtCore/QBuffer>
+#include <QtCore/QDataStream>
 
 InspectorServer::InspectorServer(QTextStream* log, QObject* parent)
 : QObject(parent)
@@ -96,7 +100,9 @@ void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* me
 		QMetaProperty property = object->metaObject()->property(i);
 		service::QtObject_Property* propertyMessage = message->add_property();
 		propertyMessage->set_name(property.name());
-		propertyMessage->set_value(property.read(object).toString().toStdString());
+
+		QByteArray propertyValue = VariantSerializer::encode(property.read(object));
+		propertyMessage->set_value(std::string(propertyValue.constData(),propertyValue.count()));
 		propertyMessage->set_iswritable(property.isWritable());
 	}
 

@@ -5,6 +5,7 @@
 #include "InspectorServer.h"
 #include "NetstringWriter.h"
 #include "ObjectProxy.h"
+#include "VariantSerializer.h"
 
 #include "inspector.pb.h"
 
@@ -118,7 +119,9 @@ void TargetApplicationProxy::updateProxy(const service::QtObject& object, Extern
 	{
 		ObjectProxy::Property property;
 		property.name = QString::fromStdString(object.property(i).name());
-		property.value = QVariant(QString::fromStdString(object.property(i).value()));
+
+		QByteArray propertyBytes(object.property(i).value().c_str(),object.property(i).value().size());
+		property.value = VariantSerializer::decode(propertyBytes);
 		property.isWritable = object.property(i).iswritable();
 		proxy->addProperty(property);
 	}

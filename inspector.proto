@@ -6,7 +6,10 @@ message QtObject
 	{
 		required string name = 1;
 		required bool isWritable = 2;
-		optional string value = 3;
+
+		// Value of the property serialized from a QVariant
+		// using QDataStream
+		optional bytes value = 3;
 	}
 
 	required int32 id = 1;

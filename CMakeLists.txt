@@ -52,6 +52,7 @@ set(INSPECTOR_LIB_CLASSES
 	InspectorServer
 	ObjectIdMap
 	WidgetPicker
+	VariantSerializer
 )
 
 foreach(CLASS ${INSPECTOR_LIB_CLASSES})
