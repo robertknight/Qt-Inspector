@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MessageReader.h"
+#include "NetstringReader.h"
 #include "ObjectIdMap.h"
 
 #include <QtCore/QFile>
@@ -41,7 +41,7 @@ class InspectorServer : public QObject
 
 		QTextStream* m_log;
 		QLocalServer* m_server;
-		MessageReader m_messageReader;
+		NetstringReader m_messageReader;
 		ObjectIdMap m_objectMap;
 };
 

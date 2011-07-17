@@ -1,13 +1,13 @@
-#include "MessageWriter.h"
+#include "NetstringWriter.h"
 
 #include <QtCore/QString>
 
-MessageWriter::MessageWriter(QByteArray* buffer)
+NetstringWriter::NetstringWriter(QByteArray* buffer)
 : m_buffer(buffer)
 {
 }
 
-void MessageWriter::writeMessage(const char* data, int length)
+void NetstringWriter::writeMessage(const char* data, int length)
 {
 	QByteArray lengthString = QString::number(length).toAscii();
 	m_buffer->append(lengthString);
@@ -16,10 +16,10 @@ void MessageWriter::writeMessage(const char* data, int length)
 	m_buffer->append(',');
 }
 
-QByteArray MessageWriter::toMessage(const QByteArray& data)
+QByteArray NetstringWriter::toMessage(const QByteArray& data)
 {
 	QByteArray message;
-	MessageWriter writer(&message);
+	NetstringWriter writer(&message);
 	writer.writeMessage(data.constData(),data.count());
 	return message;
 }

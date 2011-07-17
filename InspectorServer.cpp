@@ -1,7 +1,7 @@
 #include "InspectorServer.h"
 
 #include "DirectWidgetPicker.h"
-#include "MessageWriter.h"
+#include "NetstringWriter.h"
 #include "inspector.pb.h"
 
 #include <QtGui/QApplication>
@@ -77,7 +77,7 @@ void InspectorServer::readFromSocket(QLocalSocket* socket)
 		QByteArray responseData(response.ByteSize(),0);
 		response.SerializeToArray(responseData.data(),responseData.count());
 
-		socket->write(MessageWriter::toMessage(responseData));
+		socket->write(NetstringWriter::toMessage(responseData));
 
 		*m_log << "wrote " << responseData.count() << " bytes in response";
 	}

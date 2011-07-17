@@ -3,7 +3,7 @@
 #include "ExternalObjectProxy.h"
 #include "GdbLibraryInjector.h"
 #include "InspectorServer.h"
-#include "MessageWriter.h"
+#include "NetstringWriter.h"
 #include "ObjectProxy.h"
 
 #include "inspector.pb.h"
@@ -176,7 +176,7 @@ bool TargetApplicationProxy::sendRequest(const service::InspectorRequest& reques
 
 	QByteArray requestData(request.ByteSize(),0);
 	request.SerializeToArray(requestData.data(),requestData.count());
-	QByteArray messageData = MessageWriter::toMessage(requestData);
+	QByteArray messageData = NetstringWriter::toMessage(requestData);
 	int bytesWritten = m_socket->write(messageData);
 	if (bytesWritten != messageData.count())
 	{

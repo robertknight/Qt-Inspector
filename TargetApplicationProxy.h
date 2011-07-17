@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MessageReader.h"
+#include "NetstringReader.h"
 #include "ObjectProxy.h"
 #include "RootObjectList.h"
 
@@ -56,6 +56,6 @@ class TargetApplicationProxy : public QObject , public RootObjectList
 
 		QLocalSocket* m_socket;
 		QHash<int,ExternalObjectProxy*> m_objectProxies;
-		MessageReader m_messageReader;
+		NetstringReader m_messageReader;
 };
 

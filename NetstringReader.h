@@ -3,10 +3,13 @@
 #include <QtCore/QByteArray>
 #include <QtCore/QList>
 
-class MessageReader
+/** NetstringReader parses messages in netstrings format
+  * from a byte stream.
+  */
+class NetstringReader
 {
 	public:
-		MessageReader();
+		NetstringReader();
 
 		void parse(const char* data, int length);
 		void reset();

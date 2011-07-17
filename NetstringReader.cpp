@@ -1,11 +1,11 @@
-#include "MessageReader.h"
+#include "NetstringReader.h"
 
-MessageReader::MessageReader()
+NetstringReader::NetstringReader()
 {
 	reset();
 }
 
-void MessageReader::reset()
+void NetstringReader::reset()
 {
 	m_state = ParseHeader;
 	m_header.clear();
@@ -13,7 +13,7 @@ void MessageReader::reset()
 	m_body.clear();
 }
 
-void MessageReader::parse(const char* data, int length)
+void NetstringReader::parse(const char* data, int length)
 {
 	int bytesRead = 0;
 	while (bytesRead < length)
@@ -76,12 +76,12 @@ void MessageReader::parse(const char* data, int length)
 	}
 }
 
-int MessageReader::messageCount()
+int NetstringReader::messageCount()
 {
 	return m_messages.count();
 }
 
-QByteArray MessageReader::nextMessage()
+QByteArray NetstringReader::nextMessage()
 {
 	return m_messages.takeFirst();
 }

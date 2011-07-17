@@ -47,8 +47,8 @@ target_link_libraries(
 
 set(INSPECTOR_LIB_CLASSES
 	DirectWidgetPicker
-	MessageReader
-	MessageWriter
+	NetstringReader
+	NetstringWriter
 	InspectorServer
 	ObjectIdMap
 	WidgetPicker
