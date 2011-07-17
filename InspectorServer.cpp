@@ -127,7 +127,7 @@ QObject* InspectorServer::pickWidget()
 	directPicker.start();
 
 	QEventLoop eventLoop;
-	connect(&directPicker,SIGNAL(widgetPicked(ObjectProxy*)),
+	connect(&directPicker,SIGNAL(widgetPicked(ObjectProxy::Pointer)),
 	        &eventLoop,SLOT(quit()));
 	eventLoop.exec();
 
