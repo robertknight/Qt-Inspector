@@ -1,0 +1,29 @@
+Qt Inspector is a tool to browse the QObject tree of Qt applications.
+
+It can be used to:
+
+ - Browse the object tree of Qt applications.
+ - View properties of objects
+ - Edit properties of objects
+ - Locate a widget in the object tree by clicking on it in the application
+
+Building Qt inspector:
+
+	cmake <path to Qt inspector src>
+	make -j2
+
+Usage:
+
+ Qt Inspector can either attach to an existing application or launch
+ a specified application and then attach to it.
+
+	qtinspector <process ID of running Qt app>
+	qtinspector <program name> <args>
+
+Design:
+
+ Qt Inspector operates by injecting a helper library into the target process
+ using gdb.  This helper library sets up a local socket and listens for requests
+ from the inspector process.  The inspector and target process communicate via
+ protocol buffer messages over this socket.
+
