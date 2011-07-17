@@ -35,8 +35,6 @@ int main(int argc, char** argv)
 		targetPid = process.pid();
 	}
 
-	qDebug() << "connecting to app" << targetPid;
-
 	TargetApplicationProxy proxy;
 	if (!proxy.connectToTarget(targetPid))
 	{
