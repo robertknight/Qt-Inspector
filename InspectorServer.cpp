@@ -87,7 +87,7 @@ void InspectorServer::readFromSocket(QLocalSocket* socket)
 	}
 }
 
-void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* message)
+void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* message, bool fetchProperties)
 {
 	int id = m_objectMap.addObject(object);
 	message->set_id(id);
@@ -95,15 +95,18 @@ void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* me
 	message->set_objectname(object->objectName().toStdString());
 	message->set_address(reinterpret_cast<quintptr>(object));
 
-	for (int i=0; i < object->metaObject()->propertyCount(); i++)
+	if (fetchProperties) 
 	{
-		QMetaProperty property = object->metaObject()->property(i);
-		service::QtObject_Property* propertyMessage = message->add_property();
-		propertyMessage->set_name(property.name());
+		for (int i=0; i < object->metaObject()->propertyCount(); i++)
+		{
+			QMetaProperty property = object->metaObject()->property(i);
+			service::QtObject_Property* propertyMessage = message->add_property();
+			propertyMessage->set_name(property.name());
 
-		QByteArray propertyValue = VariantSerializer::encode(property.read(object));
-		propertyMessage->set_value(std::string(propertyValue.constData(),propertyValue.count()));
-		propertyMessage->set_iswritable(property.isWritable());
+			QByteArray propertyValue = VariantSerializer::encode(property.read(object));
+			propertyMessage->set_value(std::string(propertyValue.constData(),propertyValue.count()));
+			propertyMessage->set_iswritable(property.isWritable());
+		}
 	}
 
 	Q_FOREACH(QObject* child, object->children())
@@ -134,19 +137,41 @@ QObject* InspectorServer::pickWidget()
 	return directPicker.lastPicked();
 }
 
+void InspectorServer::fetchObjectTree(QList<int>* ids, QObject* object)
+{
+	*ids << m_objectMap.addObject(object);
+	Q_FOREACH(QObject* child, object->children())
+	{
+		fetchObjectTree(ids,child);
+	}
+}
+
 void InspectorServer::handleRequest(const service::InspectorRequest& request,
                                     service::InspectorResponse* response)
 {
 	response->set_request(request.type());
 	switch (request.type())
 	{
-		case service::InspectorRequest::FetchTopLevelWidgetsRequest:
+		case service::InspectorRequest::FetchObjectTree:
 			{
 				QList<QWidget*> widgets = QApplication::topLevelWidgets();
+				QList<int> objectIds;
 				Q_FOREACH(QObject* object, widgets)
 				{
+					fetchObjectTree(&objectIds,object);
+					response->add_rootobjectid(m_objectMap.addObject(object));
+				}
+
+				Q_FOREACH(int id, objectIds)
+				{
+					QObject* object = m_objectMap.getObject(id);
+					if (!object)
+					{
+						qWarning() << "missing object" << id;
+						continue;
+					}
 					service::QtObject* objectMessage = response->add_object();
-					updateObjectMessage(object,objectMessage);
+					updateObjectMessage(object,objectMessage,request.fetchproperties());
 				}
 			}
 			break;
@@ -154,7 +179,7 @@ void InspectorServer::handleRequest(const service::InspectorRequest& request,
 			{
 				QObject* object = m_objectMap.getObject(request.objectid());
 				service::QtObject* objectMessage = response->add_object();
-				updateObjectMessage(object,objectMessage);
+				updateObjectMessage(object,objectMessage,request.fetchproperties());
 			}
 			break;
 		case service::InspectorRequest::WritePropertyRequest:
@@ -167,7 +192,7 @@ void InspectorServer::handleRequest(const service::InspectorRequest& request,
 			{
 				QObject* object = pickWidget();
 				service::QtObject* objectMessage = response->add_object();
-				updateObjectMessage(object,objectMessage);
+				updateObjectMessage(object,objectMessage,request.fetchproperties());
 			}
 	};
 }

@@ -36,7 +36,7 @@ class TargetApplicationProxy : public QObject , public RootObjectList
 		ObjectProxy::Pointer fetchProxy(int objectId);
 		
 		// helpers to issue requests to the target process
-		bool fetchObject(ExternalObjectProxy* proxy);
+		bool fetchObject(ExternalObjectProxy* proxy, bool fetchProperties);
 		void updateProperty(int objectId, const ObjectProxy::Property& property);
 		ObjectProxy::Pointer pickWidget();
 

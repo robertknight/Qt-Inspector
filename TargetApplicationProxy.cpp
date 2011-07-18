@@ -9,6 +9,8 @@
 
 #include "inspector.pb.h"
 
+#include <QtCore/QTime>
+
 TargetApplicationProxy::TargetApplicationProxy()
 : m_socket(new QLocalSocket(this))
 {
@@ -51,7 +53,7 @@ QList<ObjectProxy::Pointer> TargetApplicationProxy::fetchTopLevelWidgets()
 
 	QList<ObjectProxy::Pointer> objects;
 
-	request.set_type(service::InspectorRequest::FetchTopLevelWidgetsRequest);
+	request.set_type(service::InspectorRequest::FetchObjectTree);
 	if (!sendRequest(request,&response))
 	{
 		qWarning() << "Failed to send top-level widget request fetch to child process";
@@ -63,7 +65,12 @@ QList<ObjectProxy::Pointer> TargetApplicationProxy::fetchTopLevelWidgets()
 		int id = response.object(i).id();
 		ObjectProxy::Pointer proxy = fetchProxy(id);
 		updateProxy(response.object(i),proxy.dynamicCast<ExternalObjectProxy>().data());
-		objects << proxy;
+	}
+
+	for (int i=0; i < response.rootobjectid_size(); i++)
+	{
+		int id = response.rootobjectid(i);
+		objects << fetchProxy(id);
 	}
 
 	return objects;
@@ -81,13 +88,14 @@ ObjectProxy::Pointer TargetApplicationProxy::fetchProxy(int objectId)
 	return proxy;
 }
 
-bool TargetApplicationProxy::fetchObject(ExternalObjectProxy* proxy)
+bool TargetApplicationProxy::fetchObject(ExternalObjectProxy* proxy, bool fetchProperties)
 {
 	service::InspectorRequest request;
 	service::InspectorResponse response;
 
 	request.set_type(service::InspectorRequest::FetchObjectRequest);
 	request.set_objectid(proxy->objectId());
+	request.set_fetchproperties(fetchProperties);
 
 	if (!sendRequest(request,&response))
 	{
@@ -114,9 +122,11 @@ void TargetApplicationProxy::updateProxy(const service::QtObject& object, Extern
 	proxy->setClassName(QString::fromStdString(object.classname()));
 	proxy->setObjectName(QString::fromStdString(object.objectname()));
 	proxy->setAddress(object.address());
-	
+
 	for (int i=0; i < object.property_size(); i++)
 	{
+		proxy->setPropertiesLoaded(true);
+
 		ObjectProxy::Property property;
 		property.name = QString::fromStdString(object.property(i).name());
 
@@ -209,6 +219,7 @@ bool TargetApplicationProxy::sendRequest(const service::InspectorRequest& reques
 
 	QByteArray responseData = m_messageReader.nextMessage();
 	response->ParseFromArray(responseData.constData(),responseData.size());
+
 	return true;
 }
 

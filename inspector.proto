@@ -7,24 +7,27 @@ message QtObject
 		required string name = 1;
 		required bool isWritable = 2;
 
-		// Value of the property serialized from a QVariant
+		// value of the property serialized from a QVariant
 		// using QDataStream
 		optional bytes value = 3;
 	}
 
+	// basic object properties
 	required int32 id = 1;
 	required string className = 2;
 	optional string objectName = 3;
-	repeated Property property = 4;
 	repeated int32 childId = 5;
 	optional int64 address = 6;
+	
+	// type-specific object properties
+	repeated Property property = 4;
 }
 
 message InspectorRequest 
 {
 	enum RequestType
 	{
-		FetchTopLevelWidgetsRequest = 1;
+		FetchObjectTree = 1;
 		FetchObjectRequest = 2;
 		WritePropertyRequest = 3;
 		PickWidgetRequest = 4;
@@ -33,6 +36,13 @@ message InspectorRequest
 	required RequestType type = 1;
 
 	optional int32 objectId = 2;
+
+	// for object fetch requests, indicates whether the properties
+	// of objects should be fetched or not.  If false, only the basic
+	// attributes of each object (id, className, objectName, children)
+	// are fetched
+	optional bool fetchProperties = 4;
+
 	optional QtObject.Property propertyUpdate = 3;
 }
 
@@ -40,6 +50,9 @@ message InspectorResponse
 {
 	required InspectorRequest.RequestType request = 1;
 
+	// for FetchObjectTree requests, this contains the IDs
+	// of the root objects
+	repeated int32 rootObjectId = 3;
 	repeated QtObject object = 2;
 }
 

@@ -24,6 +24,7 @@ class ExternalObjectProxy : public ObjectProxy
 		void setLoaded(bool loaded);
 		void addProperty(const Property& property);
 		void removeProperty(const QString& name);
+		void setPropertiesLoaded(bool loaded);
 
 		// implements ObjectProxy
 		virtual quintptr address() const;
@@ -37,10 +38,12 @@ class ExternalObjectProxy : public ObjectProxy
 		// the proxy starts out as a flyweight.  This is a blocking call
 		// to update the proxy's properties from the target process.
 		bool doLoad() const;
+		bool doPropertyLoad() const;
 
 		TargetApplicationProxy* m_appProxy;
 		int m_objectId;
 		bool m_isLoaded;
+		bool m_propertiesLoaded;
 
 		quintptr m_address;
 		QString m_className;

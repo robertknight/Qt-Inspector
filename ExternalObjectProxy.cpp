@@ -6,6 +6,7 @@ ExternalObjectProxy::ExternalObjectProxy(TargetApplicationProxy* appProxy, int o
 : m_appProxy(appProxy)
 , m_objectId(objectId)
 , m_isLoaded(false)
+, m_propertiesLoaded(false)
 {
 }
 
@@ -44,6 +45,11 @@ void ExternalObjectProxy::addProperty(const Property& property)
 	m_properties << property;
 }
 
+void ExternalObjectProxy::setPropertiesLoaded(bool loaded)
+{
+	m_propertiesLoaded = loaded;
+}
+
 void ExternalObjectProxy::setChildIds(const QList<int>& childIds)
 {
 	m_childIds = childIds;
@@ -63,7 +69,7 @@ QString ExternalObjectProxy::objectName() const
 
 void ExternalObjectProxy::writeProperty(const QString& name, const QVariant& value)
 {
-	doLoad();
+	doPropertyLoad();
 
 	Property updatedProperty;
 
@@ -98,12 +104,21 @@ bool ExternalObjectProxy::doLoad() const
 	{
 		return true;
 	}
-	return m_appProxy->fetchObject(const_cast<ExternalObjectProxy*>(this));
+	return m_appProxy->fetchObject(const_cast<ExternalObjectProxy*>(this),false);
+}
+
+bool ExternalObjectProxy::doPropertyLoad() const
+{
+	if (m_propertiesLoaded)
+	{
+		return true;
+	}
+	return m_appProxy->fetchObject(const_cast<ExternalObjectProxy*>(this),true);
 }
 
 QList<ObjectProxy::Property> ExternalObjectProxy::properties() const
 {
-	doLoad();
+	doPropertyLoad();
 	return m_properties;
 }
 

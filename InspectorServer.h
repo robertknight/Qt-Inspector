@@ -35,9 +35,11 @@ class InspectorServer : public QObject
 		void readFromSocket(QLocalSocket* socket);
 		void handleRequest(const service::InspectorRequest& request,
                            service::InspectorResponse* response);
-		void updateObjectMessage(QObject* object, service::QtObject* message);
+		void updateObjectMessage(QObject* object, service::QtObject* message,
+		                         bool fetchProperties);
 		void updateObjectProperty(QObject* object, const service::QtObject_Property& property);
 		QObject* pickWidget();
+		void fetchObjectTree(QList<int>* ids, QObject* object);
 
 		QTextStream* m_log;
 		QLocalServer* m_server;
