@@ -33,6 +33,8 @@ int main(int argc, char** argv)
 		process.start(args.at(1),programArgs);
 		process.waitForStarted();
 		targetPid = process.pid();
+
+		qWarning() << "started" << args.at(1) << "with pid" << targetPid;
 	}
 
 	TargetApplicationProxy proxy;

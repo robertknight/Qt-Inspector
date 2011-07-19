@@ -24,7 +24,7 @@ bool GdbLibraryInjector::inject(int pid, const QString& libraryPath, const QStri
 	gdbProcess->start("gdb",QStringList() << "--interpreter=mi" << "-nx");
 	if (!gdbProcess->waitForStarted())
 	{
-		qWarning() << "Failed to start gdb helper";
+		qWarning() << "Failed to start gdb helper to attach to" << pid;
 		return false;
 	}
 
@@ -60,12 +60,12 @@ bool GdbLibraryInjector::inject(int pid, const QString& libraryPath, const QStri
 
 	if (!gdbProcess->waitForFinished())
 	{
-		qWarning() << "Failed to kill gdb helper";
+		qWarning() << "Failed to kill gdb helper attached to" << pid;
 		return false;
 	}
 	if (gdbProcess->exitStatus() != QProcess::NormalExit)
 	{
-		qWarning() << "gdb helper process crashed";
+		qWarning() << "gdb helper process attached to" << pid << "crashed";
 		return false;
 	}
 
