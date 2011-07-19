@@ -46,6 +46,7 @@ target_link_libraries(
 )
 
 set(INSPECTOR_LIB_CLASSES
+	DirectObjectProxy
 	DirectWidgetPicker
 	NetstringReader
 	NetstringWriter
