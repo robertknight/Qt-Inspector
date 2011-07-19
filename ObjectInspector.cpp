@@ -34,7 +34,6 @@ ObjectInspector::ObjectInspector(QWidget* parent)
 	m_model = new ObjectPropertyModel(this);
 	m_propertySortModel = new QSortFilterProxyModel(this);
 	m_propertySortModel->setSourceModel(m_model);
-	m_propertySortModel->sort(0,Qt::AscendingOrder);
 
 	m_propertyView->setModel(m_propertySortModel);
 
@@ -69,6 +68,7 @@ void ObjectInspector::setObject(ObjectProxy::Pointer object)
 	m_nameLabel->setText(labelText);
 	m_currentObject = object;
 	m_model->setObject(object);
+	m_propertySortModel->sort(0,Qt::AscendingOrder);
 }
 
 ObjectProxy::Pointer ObjectInspector::object() const
