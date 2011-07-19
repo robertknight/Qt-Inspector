@@ -22,17 +22,10 @@ TargetApplicationProxy::TargetApplicationProxy()
 
 bool TargetApplicationProxy::connectToTarget(int pid)
 {
-	// inject the helper library
-	GdbLibraryInjector injector;
-	if (!injector.inject(pid,"libQtInspector.so","qtInspectorInit"))
-	{
-		return false;
-	}
-
 	// connect to the socket set up by the
 	// helper library
 	m_socket->connectToServer(InspectorServer::socketName(pid));
-	if (!m_socket->waitForConnected(1000))
+	if (!m_socket->waitForConnected(3000))
 	{
 		qWarning() << "Failed to connect to local socket server in target process" << pid;
 		return false;
@@ -199,7 +192,7 @@ bool TargetApplicationProxy::sendRequest(const service::InspectorRequest& reques
 	}
 	m_socket->waitForBytesWritten();
 
-	int maxDelay = 5000;
+	int maxDelay = 10000;
 	while (m_messageReader.messageCount() < 1 &&
 	       m_socket->state() == QLocalSocket::ConnectedState)
 	{

@@ -1,5 +1,6 @@
 
 #include "ExternalWidgetPicker.h"
+#include "GdbLibraryInjector.h"
 #include "TargetApplicationProxy.h"
 #include "WidgetInspector.h"
 
@@ -23,18 +24,27 @@ int main(int argc, char** argv)
 
 	QProcess process;
 	int targetPid = args.at(1).toInt();
-	if (targetPid == 0)
+
+	// inject the helper library
+	GdbLibraryInjector injector;
+	if (targetPid != 0)
+	{
+		if (!injector.inject(targetPid,"libQtInspector.so","qtInspectorInit"))
+		{
+			return false;
+		}
+	}
+	else
 	{
 		QStringList programArgs;
 		for (int i=2; i < args.count(); i++)
 		{
 			programArgs << args.at(i);
 		}
-		process.start(args.at(1),programArgs);
-		process.waitForStarted();
-		targetPid = process.pid();
-
-		qWarning() << "started" << args.at(1) << "with pid" << targetPid;
+		if (!injector.startAndInject(args.at(1),programArgs,"libQtInspector.so","qtInspectorInit",&targetPid))
+		{
+			return false;
+		}
 	}
 
 	TargetApplicationProxy proxy;
