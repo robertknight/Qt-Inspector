@@ -1,6 +1,7 @@
-Qt Inspector is a tool to browse the QObject tree of Qt applications.
+Qt Inspector is a tool to browse the object/widget tree of Qt applications.
 
-It can be used to:
+Qt Inspector starts a specified application or connects to a specified process
+and once connected it can:
 
  - Browse the object tree of Qt applications.
  - View properties of objects
