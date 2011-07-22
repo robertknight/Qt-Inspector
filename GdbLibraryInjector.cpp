@@ -71,11 +71,19 @@ bool GdbLibraryInjector::inject(const TargetInfo& target, const QString& library
                                 int* outPid)
 {
 	int pid = target.pid;
+	QString fullLibraryPath;
 
-	QLibrary library(libraryPath);
+	QFileInfo libraryInfo(libraryPath);
+	if (libraryInfo.exists()) {
+		fullLibraryPath = libraryInfo.absoluteFilePath();
+	} else {
+		fullLibraryPath = libraryPath;
+	}
+
+	QLibrary library(fullLibraryPath);
 	if (!library.load())
 	{
-		qWarning() << "Failed to load" << libraryPath << ":" << library.errorString();
+		qWarning() << "Failed to load" << fullLibraryPath << ":" << library.errorString();
 		return false;
 	}
 
@@ -154,7 +162,7 @@ bool GdbLibraryInjector::inject(const TargetInfo& target, const QString& library
 
 	// load the library into the process and invoke the entry point
 	QString flag_RTLD_NOW = QString::number(RTLD_NOW);
-	gdbStream << "call dlopen(\"" << libraryPath << "\"," << flag_RTLD_NOW << ")\n";
+	gdbStream << "call dlopen(\"" << fullLibraryPath << "\"," << flag_RTLD_NOW << ")\n";
 
 	// call dlerror() so that any problems loading the injected library
 	// are logged
@@ -162,7 +170,7 @@ bool GdbLibraryInjector::inject(const TargetInfo& target, const QString& library
 
 	// load symbols for the helper library so that the entry point can
 	// be invoked
-	gdbStream << "sharedlibrary " << libraryPath << '\n';
+	gdbStream << "sharedlibrary " << fullLibraryPath << '\n';
 	gdbStream << "call " << entryPoint << "()\n";
 	gdbStream << "detach\n";
 	gdbStream << "quit\n";
