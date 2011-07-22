@@ -7,6 +7,7 @@ set(QT_USE_QTNETWORK true)
 include(${QT_USE_FILE})
 
 find_package(Protobuf REQUIRED)
+find_package(Threads REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(
@@ -71,5 +72,5 @@ add_library(
 	${INSPECTOR_LIB_MOC_SOURCES}
 	${PROTO_SOURCES}
 )
-target_link_libraries(QtInspector ${QT_LIBRARIES} ${PROTOBUF_LIBRARIES})
+target_link_libraries(QtInspector ${QT_LIBRARIES} ${PROTOBUF_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
