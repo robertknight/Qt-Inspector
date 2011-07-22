@@ -46,6 +46,8 @@ target_link_libraries(
 	${QT_LIBRARIES}
 )
 
+install(TARGETS qtinspector RUNTIME DESTINATION bin)
+
 set(INSPECTOR_LIB_CLASSES
 	DirectObjectProxy
 	DirectWidgetPicker
@@ -74,3 +76,4 @@ add_library(
 )
 target_link_libraries(QtInspector ${QT_LIBRARIES} ${PROTOBUF_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
+install(TARGETS QtInspector LIBRARY DESTINATION lib)
