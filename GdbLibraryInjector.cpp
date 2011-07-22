@@ -1,6 +1,7 @@
 #include "GdbLibraryInjector.h"
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QLibrary>
 #include <QtCore/QProcess>
 #include <QtCore/QTextStream>
 
@@ -71,10 +72,10 @@ bool GdbLibraryInjector::inject(const TargetInfo& target, const QString& library
 {
 	int pid = target.pid;
 
-	QFileInfo libraryInfo(libraryPath);
-	if (!libraryInfo.exists())
+	QLibrary library(libraryPath);
+	if (!library.load())
 	{
-		qWarning() << "Library file" << libraryPath << "not found";
+		qWarning() << "Failed to load" << libraryPath << ":" << library.errorString();
 		return false;
 	}
 
@@ -153,7 +154,7 @@ bool GdbLibraryInjector::inject(const TargetInfo& target, const QString& library
 
 	// load the library into the process and invoke the entry point
 	QString flag_RTLD_NOW = QString::number(RTLD_NOW);
-	gdbStream << "call dlopen(\"" << libraryInfo.absoluteFilePath() << "\"," << flag_RTLD_NOW << ")\n";
+	gdbStream << "call dlopen(\"" << libraryPath << "\"," << flag_RTLD_NOW << ")\n";
 
 	// call dlerror() so that any problems loading the injected library
 	// are logged
@@ -161,7 +162,7 @@ bool GdbLibraryInjector::inject(const TargetInfo& target, const QString& library
 
 	// load symbols for the helper library so that the entry point can
 	// be invoked
-	gdbStream << "sharedlibrary " << libraryInfo.absoluteFilePath() << '\n';
+	gdbStream << "sharedlibrary " << libraryPath << '\n';
 	gdbStream << "call " << entryPoint << "()\n";
 	gdbStream << "detach\n";
 	gdbStream << "quit\n";
