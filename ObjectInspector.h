@@ -27,7 +27,7 @@ class ObjectInspector : public QWidget
 		void refresh();
 
 	private Q_SLOTS:
-		void changeFilter(const QString& text);
+		void changeFilter(const QString& pattern);
 
 	private:
 		QLabel* m_nameLabel;

@@ -26,6 +26,8 @@ ObjectInspector::ObjectInspector(QWidget* parent)
 	QHBoxLayout* filterLayout = new QHBoxLayout;
 	QLabel* filterLabel = new QLabel(tr("Filter:"),this);
 	m_propertyFilterEdit = new QLineEdit(this);
+	m_propertyFilterEdit->setToolTip(tr("String or regular expression to filter property list with"));
+
 	connect(m_propertyFilterEdit,SIGNAL(textChanged(QString)),
 	        this,SLOT(changeFilter(QString)));
 	filterLayout->addWidget(filterLabel);
@@ -81,8 +83,8 @@ ObjectProxy::Pointer ObjectInspector::object() const
 	return m_currentObject;
 }
 
-void ObjectInspector::changeFilter(const QString& text)
+void ObjectInspector::changeFilter(const QString& pattern)
 {
-	m_propertySortModel->setFilterFixedString(text);
+	m_propertySortModel->setFilterRegExp(QRegExp(pattern));
 }
 
