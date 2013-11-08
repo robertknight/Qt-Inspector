@@ -38,7 +38,7 @@ InspectorServer::InspectorServer(QTextStream* log, QObject* parent)
 
 QString InspectorServer::socketName(int pid)
 {
-	return QString("qtInspector-%1").arg(pid);
+	return QString("/tmp/qtinspector-%1").arg(pid);
 }
 
 void InspectorServer::handleConnection()
