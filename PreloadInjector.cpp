@@ -28,12 +28,12 @@ bool PreloadInjector::startAndInject(const QString& program, const QStringList& 
 
 #ifdef Q_OS_MAC
 	QString var = "DYLD_INSERT_LIBRARIES";
-	QStringList currentLibs = env.value(var).split(':');
+	QStringList currentLibs = env.value(var).split(':', QString::SkipEmptyParts);
 	currentLibs.prepend(libraryPath);
 	env.insert(var, currentLibs.join(":"));
 #elif defined(Q_OS_LINUX)
 	QString var = "LD_PRELOAD";
-	QStringList currentLibs = env.value(var).split(' ');
+	QStringList currentLibs = env.value(var).split(' ', QString::SkipEmptyParts);
 	currentLibs.prepend(libraryPath);
 	env.insert(var, currentLibs.join(" "));
 #else
