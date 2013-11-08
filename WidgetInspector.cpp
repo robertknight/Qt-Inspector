@@ -64,19 +64,23 @@ WidgetInspector::WidgetInspector(RootObjectList* rootList, QWidget* parent)
 	m_pickButton = new QPushButton(tr("Pick Widget"),this);
 	setWidgetPicker(new DirectWidgetPicker(this));
 
-	QPushButton* refreshButton = new QPushButton(tr("Refresh"),this);
-	connect(refreshButton,SIGNAL(clicked()),this,SLOT(resetModel()));
+	QPushButton* refreshButton = new QPushButton(tr("Refresh Tree"),this);
+	connect(refreshButton,SIGNAL(clicked()),this,SLOT(refreshTree()));
+
+	QPushButton* refreshObjectButton = new QPushButton(tr("Refresh Object"),this);
+	connect(refreshObjectButton,SIGNAL(clicked()),m_objectInspector,SLOT(refresh()));
 
 	QHBoxLayout* actionLayout = new QHBoxLayout;
 	actionLayout->addStretch();
 	actionLayout->addWidget(m_pickButton);
 	actionLayout->addWidget(copyToDebuggerButton);
 	actionLayout->addWidget(refreshButton);
+	actionLayout->addWidget(refreshObjectButton);
 	layout->addLayout(actionLayout);
 
 	resize(700,400);
 
-	resetModel();
+	refreshTree();
 }
 
 void WidgetInspector::pickerFinished(ObjectProxy::Pointer widget)
@@ -111,9 +115,15 @@ void WidgetInspector::selectionChanged(const QModelIndex& current, const QModelI
 	m_objectInspector->setObject(ObjectTreeModel::objectFromIndex(current));
 }
 
-void WidgetInspector::resetModel()
+void WidgetInspector::refreshTree()
 {
+	QModelIndex current = m_objectTree->selectionModel()->currentIndex();
+	ObjectProxy::Pointer currentObject = ObjectTreeModel::objectFromIndex(current);
 	m_objectModel->setRootObjects(m_rootList->rootObjects());
+	if (currentObject)
+	{
+		select(currentObject);
+	}
 }
 
 void WidgetInspector::search(const QString& query)
@@ -132,7 +142,7 @@ void WidgetInspector::select(ObjectProxy::Pointer object)
 	{
 		// if no matching object is found in the model, then try refreshing
 		// the model and searching again
-		resetModel();
+		refreshTree();
 		index = m_objectModel->index(object);
 	}
 

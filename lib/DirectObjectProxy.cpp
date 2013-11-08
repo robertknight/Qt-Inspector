@@ -73,3 +73,7 @@ QList<ObjectProxy::Pointer> DirectObjectProxy::children()
 	return QList<ObjectProxy::Pointer>();
 }
 
+void DirectObjectProxy::refresh()
+{
+}
+

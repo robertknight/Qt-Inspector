@@ -33,6 +33,7 @@ class ExternalObjectProxy : public ObjectProxy
 		virtual QList<ObjectProxy::Pointer> children();
 		virtual QList<Property> properties() const;
 		virtual void writeProperty(const QString& name, const QVariant& value);
+		virtual void refresh();
 
 	private:
 		// the proxy starts out as a flyweight.  This is a blocking call

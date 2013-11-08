@@ -133,3 +133,9 @@ quintptr ExternalObjectProxy::address() const
 	return m_address;
 }
 
+void ExternalObjectProxy::refresh()
+{
+	m_propertiesLoaded = false;
+	m_properties.clear();
+}
+

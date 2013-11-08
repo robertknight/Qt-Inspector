@@ -13,6 +13,7 @@ class ObjectPropertyModel : public QStandardItemModel
 		ObjectPropertyModel(QObject* parent);
 
 		void setObject(ObjectProxy::Pointer object);
+		ObjectProxy::Pointer object() const;
 
 		static QVariant toEditValue(const QVariant& value);
 

@@ -49,6 +49,11 @@ QString ObjectInspector::formatAddress(void* ptr)
 	return QString("0x%1").arg(QString(QByteArray::number(intPtr,16)));
 }
 
+void ObjectInspector::refresh()
+{
+	setObject(m_currentObject);
+}
+
 void ObjectInspector::setObject(ObjectProxy::Pointer object)
 {
 	QString labelText;

@@ -33,7 +33,7 @@ class LIB_MENDELEY_EXPORT WidgetInspector : public QWidget
 		static void registerGlobalShortcut(const QKeySequence& key, QWidget* parentWidget);
 
 	private Q_SLOTS:
-		void resetModel();
+		void refreshTree();
 		void search(const QString& query);
 		void pickerFinished(ObjectProxy::Pointer widget);
 		void selectionChanged(const QModelIndex& current, const QModelIndex& previous);

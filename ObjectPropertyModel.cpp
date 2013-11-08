@@ -62,6 +62,7 @@ void ObjectPropertyModel::setObject(ObjectProxy::Pointer object)
 
 	if (object)
 	{
+		object->refresh();
 		int rowCount = 0;
 		QListIterator<ObjectProxy::Property> iter(object->properties());
 		while (iter.hasNext())
@@ -81,5 +82,10 @@ void ObjectPropertyModel::setObject(ObjectProxy::Pointer object)
 			++rowCount;
 		}
 	}
+}
+
+ObjectProxy::Pointer ObjectPropertyModel::object() const
+{
+	return m_object;
 }
 

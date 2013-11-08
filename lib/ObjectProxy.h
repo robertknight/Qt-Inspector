@@ -44,5 +44,8 @@ class ObjectProxy
 
 		/** Change the value of a property to @p value. */
 		virtual void writeProperty(const QString& name, const QVariant& value) = 0;
+
+		/** Clears any cached property values in this proxy. */
+		virtual void refresh() = 0;
 };
 

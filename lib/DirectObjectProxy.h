@@ -14,6 +14,7 @@ class DirectObjectProxy : public ObjectProxy
 
 		virtual QList<Property> properties() const;
 		virtual void writeProperty(const QString& name, const QVariant& value);
+		virtual void refresh();
 
 	private:
 		QWeakPointer<QObject> m_object;

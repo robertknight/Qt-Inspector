@@ -159,6 +159,10 @@ QString ObjectTreeModel::displayText(ObjectProxy::Pointer object) const
 
 ObjectProxy::Pointer ObjectTreeModel::objectFromIndex(const QModelIndex& index)
 {
+	if (!index.isValid())
+	{
+		return ObjectProxy::Pointer();
+	}
 	return itemFromIndex(index)->object;
 }
 

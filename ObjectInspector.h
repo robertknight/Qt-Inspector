@@ -23,6 +23,9 @@ class ObjectInspector : public QWidget
 
 		static QString formatAddress(void* ptr);
 
+	public Q_SLOTS:
+		void refresh();
+
 	private Q_SLOTS:
 		void changeFilter(const QString& text);
 
