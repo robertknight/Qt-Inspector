@@ -3,6 +3,9 @@ Qt Inspector
 
 Qt Inspector is a tool to browse the object/widget tree of Qt applications.
 
+![Screenshot](http://2.bp.blogspot.com/-gZW9n7V-zgs/TiinbhFZNpI/AAAAAAAAABc/F3zpGbS73bE/s1600/inspector-dolphin-settings.png)
+
+
 Qt Inspector starts a specified application or connects to a specified process
 and once connected it can:
 
