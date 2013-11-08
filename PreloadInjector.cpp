@@ -28,12 +28,14 @@ bool PreloadInjector::startAndInject(const QString& program, const QStringList& 
 
 #ifdef Q_OS_MAC
 	QString var = "DYLD_INSERT_LIBRARIES";
-	QString value = env.value(var);
-	env.insert(var, QString("%1:%2").arg(libraryPath).arg(value));
+	QStringList currentLibs = env.value(var).split(':');
+	currentLibs.prepend(libraryPath);
+	env.insert(var, currentLibs.join(":"));
 #elif defined(Q_OS_LINUX)
 	QString var = "LD_PRELOAD";
-	QString value = env.value(var);
-	env.insert(var, QString("%1 %2").arg(libraryPath).arg(value));
+	QStringList currentLibs = env.value(var).split(' ');
+	currentLibs.prepend(libraryPath);
+	env.insert(var, currentLibs.join(" "));
 #else
 #error Platform not supported
 #endif
