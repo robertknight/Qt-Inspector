@@ -10,6 +10,7 @@
 #include <QtNetwork/QLocalServer>
 #include <QtNetwork/QLocalSocket>
 #include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
 #include <QtCore/QEventLoop>
 #include <QtCore/QMetaProperty>
 
@@ -92,7 +93,7 @@ void InspectorServer::updateObjectMessage(QObject* object, service::QtObject* me
 	int id = m_objectMap.addObject(object);
 	message->set_id(id);
 	message->set_classname(object->metaObject()->className());
-	message->set_objectname(object->objectName().toStdString());
+	message->set_objectname(object->objectName().toUtf8().constData());
 	message->set_address(reinterpret_cast<quintptr>(object));
 
 	if (fetchProperties) 
