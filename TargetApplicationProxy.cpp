@@ -2,12 +2,11 @@
 
 #include "ExternalObjectProxy.h"
 #include "GdbLibraryInjector.h"
-#include "InspectorServer.h"
-#include "NetstringWriter.h"
-#include "ObjectProxy.h"
-#include "VariantSerializer.h"
-
-#include "inspector.pb.h"
+#include "lib/InspectorServer.h"
+#include "lib/NetstringWriter.h"
+#include "lib/ObjectProxy.h"
+#include "lib/VariantSerializer.h"
+#include "lib/inspector.pb.h"
 
 #include <QtCore/QTime>
 

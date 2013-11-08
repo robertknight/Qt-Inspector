@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ObjectProxy.h"
+#include "lib/ObjectProxy.h"
 
 /** Interface which provides access to a list of root objects
   * for use with the WidgetInspector

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "NetstringReader.h"
-#include "ObjectProxy.h"
 #include "RootObjectList.h"
+#include "lib/NetstringReader.h"
+#include "lib/ObjectProxy.h"
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>

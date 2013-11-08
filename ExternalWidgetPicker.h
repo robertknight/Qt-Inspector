@@ -1,6 +1,6 @@
 #pragma once
 
-#include "WidgetPicker.h"
+#include "lib/WidgetPicker.h"
 #include "TargetApplicationProxy.h"
 
 class ExternalWidgetPicker : public WidgetPicker

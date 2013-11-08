@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ObjectProxy.h"
+#include "lib/ObjectProxy.h"
 
 #include <QtGui/QWidget>
 

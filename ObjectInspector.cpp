@@ -1,7 +1,7 @@
 #include "ObjectInspector.h"
 
 #include "ObjectPropertyModel.h"
-#include "ObjectProxy.h"
+#include "lib/ObjectProxy.h"
 
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>

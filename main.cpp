@@ -4,12 +4,23 @@
 #include "TargetApplicationProxy.h"
 #include "WidgetInspector.h"
 
-#include "ObjectProxy.h"
+#include "lib/ObjectProxy.h"
 
 #include <QtGui/QApplication>
 #include <QtCore/QProcess>
 
 #include <QtDebug>
+
+QString injectorLibPath()
+{
+#ifdef Q_OS_LINUX
+	return "lib/libQtInspector.so";
+#elif defined(Q_OS_MAC)
+	return "lib/libQtInspector.dylib";
+#else
+#error Platform not supported
+#endif
+}
 
 int main(int argc, char** argv)
 {
@@ -29,7 +40,7 @@ int main(int argc, char** argv)
 	GdbLibraryInjector injector;
 	if (targetPid != 0)
 	{
-		if (!injector.inject(targetPid,"libQtInspector.so","qtInspectorInit"))
+		if (!injector.inject(targetPid, injectorLibPath(), "qtInspectorInit"))
 		{
 			return false;
 		}
@@ -41,7 +52,7 @@ int main(int argc, char** argv)
 		{
 			programArgs << args.at(i);
 		}
-		if (!injector.startAndInject(args.at(1),programArgs,"libQtInspector.so","qtInspectorInit",&targetPid))
+		if (!injector.startAndInject(args.at(1),programArgs,injectorLibPath(),"qtInspectorInit",&targetPid))
 		{
 			return false;
 		}

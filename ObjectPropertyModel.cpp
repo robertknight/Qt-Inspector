@@ -1,6 +1,6 @@
 #include "ObjectPropertyModel.h"
 
-#include "ObjectProxy.h"
+#include "lib/ObjectProxy.h"
 
 #include <QtCore/QMetaProperty>
 #include <QtDebug>

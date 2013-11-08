@@ -1,6 +1,8 @@
 project("Qt Widget Inspector")
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.6)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
 
 find_package(Qt4 REQUIRED)
 set(QT_USE_QTNETWORK true)
@@ -9,6 +11,8 @@ include(${QT_USE_FILE})
 find_package(Protobuf REQUIRED)
 find_package(Threads REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+
+add_subdirectory(lib)
 
 set(
 	CLASSES
@@ -29,15 +33,10 @@ foreach(CLASS ${CLASSES})
 	set(HEADERS ${HEADERS} ${CLASS}.h)
 endforeach()
 
-qt4_wrap_cpp(MOC_SOURCES ${HEADERS})
-
-protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS inspector.proto)
-
 add_executable(
 	qtinspector
 	main.cpp
 	${SOURCES}
-	${MOC_SOURCES}
 )
 
 target_link_libraries(
@@ -48,32 +47,3 @@ target_link_libraries(
 
 install(TARGETS qtinspector RUNTIME DESTINATION bin)
 
-set(INSPECTOR_LIB_CLASSES
-	DirectObjectProxy
-	DirectWidgetPicker
-	NetstringReader
-	NetstringWriter
-	InspectorServer
-	ObjectIdMap
-	WidgetPicker
-	VariantSerializer
-)
-
-foreach(CLASS ${INSPECTOR_LIB_CLASSES})
-	set(INSPECTOR_LIB_SOURCES ${INSPECTOR_LIB_SOURCES} ${CLASS}.cpp)
-	set(INSPECTOR_LIB_HEADERS ${INSPECTOR_LIB_HEADERS} ${CLASS}.h)
-endforeach()
-
-qt4_wrap_cpp(INSPECTOR_LIB_MOC_SOURCES ${INSPECTOR_LIB_HEADERS})
-
-add_library(
-	QtInspector
-	SHARED
-	libmain.cpp
-	${INSPECTOR_LIB_SOURCES}
-	${INSPECTOR_LIB_MOC_SOURCES}
-	${PROTO_SOURCES}
-)
-target_link_libraries(QtInspector ${QT_LIBRARIES} ${PROTOBUF_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-
-install(TARGETS QtInspector LIBRARY DESTINATION lib)

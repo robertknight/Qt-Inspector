@@ -2,10 +2,10 @@
 
 #include "libMendeleyExport.h"
 
+#include "lib/ObjectProxy.h"
+
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QWeakPointer>
-
-#include "ObjectProxy.h"
 
 class ObjectFilter;
 

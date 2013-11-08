@@ -1,7 +1,7 @@
 #pragma once
 
 #include "libMendeleyExport.h"
-#include "ObjectProxy.h"
+#include "lib/ObjectProxy.h"
 
 #include <QtGui/QWidget>
 

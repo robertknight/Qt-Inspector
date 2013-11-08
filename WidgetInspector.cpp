@@ -1,13 +1,13 @@
 
 #include "WidgetInspector.h"
 
-#include "DirectWidgetPicker.h"
 #include "ObjectInspector.h"
 #include "ObjectTreeModel.h"
 #include "OutOfProcessClipboard.h"
 #include "RootObjectList.h"
-#include "WidgetPicker.h"
 #include "WidgetInspectorShortcut.h"
+#include "lib/DirectWidgetPicker.h"
+#include "lib/WidgetPicker.h"
 
 #include <QtGui/QApplication>
 #include <QtGui/QClipboard>
