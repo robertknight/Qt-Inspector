@@ -1,5 +1,7 @@
 #include "PreloadInjector.h"
 
+#include "lib/InspectorServer.h"
+
 #include <QtCore/QDebug>
 #include <QtCore/QFileInfo>
 #include <QtCore/QProcess>
@@ -16,7 +18,7 @@ bool PreloadInjector::startAndInject(const QString& program, const QStringList& 
 	QObject::connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), process, SLOT(deleteLater()));
 	process->setProcessChannelMode(QProcess::ForwardedChannels);
 
-	QProcessEnvironment env = process->processEnvironment();
+	QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
 	QString libPath = QFileInfo(libraryPath).absoluteFilePath();
 	if (!QFile::exists(libPath))
@@ -25,9 +27,13 @@ bool PreloadInjector::startAndInject(const QString& program, const QStringList& 
 	}
 
 #ifdef Q_OS_MAC
-	env.insert("DYLD_INSERT_LIBRARIES", libraryPath);
+	QString var = "DYLD_INSERT_LIBRARIES";
+	QString value = env.value(var);
+	env.insert(var, QString("%1:%2").arg(libraryPath).arg(value));
 #elif defined(Q_OS_LINUX)
-	env.insert("LD_PRELOAD", libraryPath);
+	QString var = "LD_PRELOAD";
+	QString value = env.value(var);
+	env.insert(var, QString("%1 %2").arg(libraryPath).arg(value));
 #else
 #error Platform not supported
 #endif
@@ -42,8 +48,8 @@ bool PreloadInjector::startAndInject(const QString& program, const QStringList& 
 
 	*pid = process->pid();
 
-	QString logName = QString("/tmp/inspector-log-%1").arg(*pid);
-	while (!QFile::exists(logName))
+	QString socketPath = InspectorServer::socketName(*pid);
+	while (!QFile::exists(socketPath))
 	{
 #ifdef Q_OS_UNIX
 		usleep(100 * 1000);
