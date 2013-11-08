@@ -1,6 +1,7 @@
 
 #include "ExternalWidgetPicker.h"
 #include "GdbLibraryInjector.h"
+#include "PreloadInjector.h"
 #include "TargetApplicationProxy.h"
 #include "WidgetInspector.h"
 
@@ -37,22 +38,24 @@ int main(int argc, char** argv)
 	int targetPid = args.at(1).toInt();
 
 	// inject the helper library
-	GdbLibraryInjector injector;
+	QScopedPointer<Injector> injector;
 	if (targetPid != 0)
 	{
-		if (!injector.inject(targetPid, injectorLibPath(), "qtInspectorInit"))
+		injector.reset(new GdbLibraryInjector);
+		if (!injector->inject(targetPid, injectorLibPath(), "qtInspectorInit"))
 		{
 			return false;
 		}
 	}
 	else
 	{
+		injector.reset(new PreloadInjector);
 		QStringList programArgs;
 		for (int i=2; i < args.count(); i++)
 		{
 			programArgs << args.at(i);
 		}
-		if (!injector.startAndInject(args.at(1),programArgs,injectorLibPath(),"qtInspectorInit",&targetPid))
+		if (!injector->startAndInject(args.at(1),programArgs,injectorLibPath(),"qtInspectorInit",&targetPid))
 		{
 			return false;
 		}

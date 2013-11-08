@@ -16,16 +16,17 @@ add_subdirectory(lib)
 
 set(
 	CLASSES
+	ExternalObjectProxy
 	ExternalWidgetPicker
+	GdbLibraryInjector
 	ObjectInspector
-	ObjectTreeModel
 	ObjectPropertyModel
+	ObjectTreeModel
 	OutOfProcessClipboard
+	PreloadInjector
+	TargetApplicationProxy
 	WidgetInspector
 	WidgetInspectorShortcut
-	TargetApplicationProxy
-	GdbLibraryInjector
-	ExternalObjectProxy
 )
 
 foreach(CLASS ${CLASSES})

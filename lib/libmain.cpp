@@ -1,9 +1,16 @@
 
+#include <QtCore/QDebug>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
+#include <QtCore/QFileInfo>
 #include <QtNetwork/QLocalServer>
 
 #include "InspectorServer.h"
+#include "StartupHelper.h"
+
+#include <iostream>
+
+extern void qtInspectorInit();
 
 class LogFile
 {
@@ -25,18 +32,33 @@ class LogFile
 		QTextStream m_stream;
 };
 
+#ifdef Q_OS_UNIX
+__attribute__((constructor)) void qtInspectorLibInit()
+{
+	StartupHelper* initHelper = new StartupHelper(qtInspectorInit);
+	QObject::connect(initHelper, SIGNAL(startupComplete()), initHelper, SLOT(deleteLater()));
+	initHelper->watchForStartup();
+}
+#endif
+
 static QScopedPointer<LogFile> logFile;
 
 // entry point for the inspector helper library
 void qtInspectorInit()
 {
+	QString appName = QFileInfo(QCoreApplication::applicationFilePath()).baseName();
+	if (appName == "qtinspector")
+	{
+		return;
+	}
+
 	if (logFile)
 	{
 		logFile->stream() << "Hmm, we've already attached to this app\n";
 		logFile->stream().flush();
 		return;
 	}
-
+	
 	QString logName = QString("/tmp/inspector-log-%1").arg(QCoreApplication::applicationPid());
 	LogFile* log = new LogFile(logName);
 	logFile.reset(log);

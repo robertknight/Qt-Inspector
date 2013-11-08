@@ -5,6 +5,7 @@ set(INSPECTOR_LIB_CLASSES
 	NetstringWriter
 	InspectorServer
 	ObjectIdMap
+	StartupHelper
 	WidgetPicker
 	VariantSerializer
 )

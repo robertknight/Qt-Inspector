@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Injector.h"
+
 #include <QtCore/QStringList>
 
 class QProcess;
@@ -9,19 +11,13 @@ class QTextStream;
   * load a library it and then invoke a specified
   * entry point in the library.
   */
-class GdbLibraryInjector
+class GdbLibraryInjector : public Injector
 {
 	public:
-		/** Start a process and inject a library into it.  The library will
-		  * be injected when the application reaches the Qt event loop.
-		  */
+		// implements Injector
 		bool startAndInject(const QString& program, const QStringList& args,
 		                    const QString& libraryPath, const QString& entryPoint,
 		                    int* pid);
-
-		/** Inject a library into a running application.  The application
-		  * must have already reached the Qt event loop.
-		  */
 		bool inject(int pid, const QString& libraryPath, const QString& entryPoint);
 
 	private:
