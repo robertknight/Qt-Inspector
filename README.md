@@ -11,16 +11,16 @@ and once connected it can:
  - Edit properties of objects
  - Locate a widget in the object tree by clicking on it in the application
 
-Building Qt inspector
----------------------
+### Building Qt inspector
+
+Qt Inspector currently runs on Linux and Mac.
 
 ```
 	cmake <path to Qt inspector src>
 	make -j2
 ```
 
-Usage
------
+### Usage
 
  Qt Inspector can either attach to an existing application or launch
  a specified application and then attach to it.
@@ -28,12 +28,11 @@ Usage
  Recommended usage is to specify the program name and arguments.
 
 ```
-	qtinspector <program name> <args>
-	qtinspector <process ID of running Qt app>
+	./qtinspector <program name> <args>
+	./qtinspector <process ID of running Qt app>
 ```
 
-Design
-------
+### Design
 
  Qt Inspector operates by injecting a helper library into the target process
  when starting it using LD_PRELOAD / DYLD_INSERT_LIBRARIES or via gdb
