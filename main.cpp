@@ -19,7 +19,7 @@ QString injectorLibPath()
 #elif defined(Q_OS_MAC)
 	return "lib/libQtInspector.dylib";
 #else
-#error Platform not supported
+	return "lib/QtInspector.dll";
 #endif
 }
 
@@ -41,7 +41,9 @@ int main(int argc, char** argv)
 	QScopedPointer<Injector> injector;
 	if (targetPid != 0)
 	{
+#ifdef Q_OS_UNIX
 		injector.reset(new GdbLibraryInjector);
+#endif
 		if (!injector->inject(targetPid, injectorLibPath(), "qtInspectorInit"))
 		{
 			return false;
@@ -49,7 +51,9 @@ int main(int argc, char** argv)
 	}
 	else
 	{
+#ifdef Q_OS_UNIX
 		injector.reset(new PreloadInjector);
+#endif
 		QStringList programArgs;
 		for (int i=2; i < args.count(); i++)
 		{

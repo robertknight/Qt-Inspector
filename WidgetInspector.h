@@ -1,6 +1,5 @@
 #pragma once
 
-#include "libMendeleyExport.h"
 #include "lib/ObjectProxy.h"
 
 #include <QWidget>
@@ -16,7 +15,7 @@ class QPushButton;
 class QModelIndex;
 class QTreeView;
 
-class LIB_MENDELEY_EXPORT WidgetInspector : public QWidget
+class WidgetInspector : public QWidget
 {
 	Q_OBJECT
 

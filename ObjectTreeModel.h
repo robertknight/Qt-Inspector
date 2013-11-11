@@ -1,7 +1,5 @@
 #pragma once
 
-#include "libMendeleyExport.h"
-
 #include "lib/ObjectProxy.h"
 
 #include <QtCore/QAbstractItemModel>
@@ -9,7 +7,7 @@
 
 class ObjectFilter;
 
-class LIB_MENDELEY_EXPORT ObjectTreeModel : public QAbstractItemModel
+class ObjectTreeModel : public QAbstractItemModel
 {
 	Q_OBJECT
 

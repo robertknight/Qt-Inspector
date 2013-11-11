@@ -1,10 +1,11 @@
 #pragma once
 
+#include "../libQtInspectorExport.h"
 #include "ObjectProxy.h"
 
 #include <QtCore/QObject>
 
-class WidgetPicker : public QObject
+class LIB_QTI_EXPORT WidgetPicker : public QObject
 {
 	Q_OBJECT
 

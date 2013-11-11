@@ -5,6 +5,7 @@ set(INSPECTOR_LIB_CLASSES
 	NetstringWriter
 	InspectorServer
 	ObjectIdMap
+	PlatformUtils
 	StartupHelper
 	WidgetPicker
 	VariantSerializer
@@ -16,6 +17,9 @@ foreach(CLASS ${INSPECTOR_LIB_CLASSES})
 endforeach()
 
 protobuf_generate_cpp(PROTO_SOURCES PROTO_HEADERS inspector.proto)
+include_directories(${PROTOBUF_INCLUDE_DIR})
+
+add_definitions(-DLIB_QTINSPECTOR_BUILD)
 
 add_library(
 	QtInspector
@@ -30,4 +34,4 @@ if (USE_QT5)
   qt5_use_modules(QtInspector Concurrent Widgets Network)
 endif()
 
-install(TARGETS QtInspector LIBRARY DESTINATION lib)
+install(TARGETS QtInspector DESTINATION lib)

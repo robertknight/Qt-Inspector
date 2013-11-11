@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../libQtInspectorExport.h"
 #include "NetstringReader.h"
 #include "ObjectIdMap.h"
 
@@ -18,7 +19,7 @@ namespace service
 	class QtObject_Property;
 };
 
-class InspectorServer : public QObject
+class LIB_QTI_EXPORT InspectorServer : public QObject
 {
 	Q_OBJECT
 

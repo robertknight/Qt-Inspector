@@ -25,22 +25,26 @@ find_package(Protobuf REQUIRED)
 find_package(Threads REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
+
 add_subdirectory(lib)
 
 set(
 	CLASSES
 	ExternalObjectProxy
 	ExternalWidgetPicker
-	GdbLibraryInjector
 	ObjectInspector
 	ObjectPropertyModel
 	ObjectTreeModel
 	OutOfProcessClipboard
-	PreloadInjector
 	TargetApplicationProxy
 	WidgetInspector
 	WidgetInspectorShortcut
 )
+
+if(UNIX)
+  set(CLASSES ${CLASSES} GdbLibraryInjector PreloadInjector)
+endif()
 
 foreach(CLASS ${CLASSES})
 	set(SOURCES ${SOURCES} ${CLASS}.cpp)

@@ -1,12 +1,14 @@
 #pragma once
 
+#include "../libQtInspectorExport.h"
+
 #include <QtCore/QByteArray>
 #include <QtCore/QList>
 
 /** NetstringReader parses messages in netstrings format
   * from a byte stream.
   */
-class NetstringReader
+class LIB_QTI_EXPORT NetstringReader
 {
 	public:
 		NetstringReader();

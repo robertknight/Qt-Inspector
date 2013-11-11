@@ -33,13 +33,17 @@ class LogFile
 };
 
 #ifdef Q_OS_UNIX
-__attribute__((constructor)) void qtInspectorLibInit()
+#define LIB_INIT_FUNC __attribute__((constructor))
+#else
+#define LIB_INIT_FUNC
+#endif
+
+LIB_INIT_FUNC void qtInspectorLibInit()
 {
 	StartupHelper* initHelper = new StartupHelper(qtInspectorInit);
 	QObject::connect(initHelper, SIGNAL(startupComplete()), initHelper, SLOT(deleteLater()));
 	initHelper->watchForStartup();
 }
-#endif
 
 static QScopedPointer<LogFile> logFile;
 

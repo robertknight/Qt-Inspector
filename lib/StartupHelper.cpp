@@ -1,8 +1,8 @@
 #include "StartupHelper.h"
 
-#include <QtConcurrentRun>
+#include "PlatformUtils.h"
 
-#include <unistd.h>
+#include <QtConcurrentRun>
 
 void StartupHelper::runInitFunc()
 {
@@ -14,7 +14,7 @@ void StartupHelper::doWait()
 {
 	while (QCoreApplication::startingUp())
 	{
-		usleep(100 * 1000);
+		PlatformUtils::msleep(100);
 	}
 	QMetaObject::invokeMethod(this, "runInitFunc", Qt::QueuedConnection);
 }
