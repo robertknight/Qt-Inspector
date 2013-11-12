@@ -1,14 +1,20 @@
 
 #include <QtCore/QDebug>
+#include <QtCore/QDir>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtNetwork/QLocalServer>
 
+#include "../libQtInspectorExport.h"
 #include "InspectorServer.h"
 #include "StartupHelper.h"
 
 #include <iostream>
+
+#ifdef Q_OS_WIN32
+#include <Windows.h>
+#endif
 
 extern void qtInspectorInit();
 
@@ -33,17 +39,32 @@ class LogFile
 };
 
 #ifdef Q_OS_UNIX
-#define LIB_INIT_FUNC __attribute__((constructor))
-#else
-#define LIB_INIT_FUNC
-#endif
-
-LIB_INIT_FUNC void qtInspectorLibInit()
+ __attribute__((constructor)) void qtInspectorLibInit()
 {
 	StartupHelper* initHelper = new StartupHelper(qtInspectorInit);
 	QObject::connect(initHelper, SIGNAL(startupComplete()), initHelper, SLOT(deleteLater()));
 	initHelper->watchForStartup();
 }
+#endif
+
+#ifdef Q_OS_WIN32
+INT APIENTRY DllMain(HMODULE,DWORD,LPVOID)
+{
+    std::cout << "DllMain invoked in " << GetCurrentProcessId() << std::endl;
+    return TRUE;
+}
+
+ extern "C" __declspec(dllexport) LRESULT WINAPI qtInspectorLibInit(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	static bool used = false;
+	if (!used)
+	{
+		std::cout << "invoking libinit func" << std::endl;
+		used = true;
+	}
+	return CallNextHookEx(0 /* HHOOK - unused */, nCode, wParam, lParam);
+}
+#endif
 
 static QScopedPointer<LogFile> logFile;
 
@@ -63,7 +84,7 @@ void qtInspectorInit()
 		return;
 	}
 	
-	QString logName = QString("/tmp/inspector-log-%1").arg(QCoreApplication::applicationPid());
+	QString logName = QDir::temp().filePath(QString("/tmp/inspector-log-%1").arg(QCoreApplication::applicationPid()));
 	LogFile* log = new LogFile(logName);
 	logFile.reset(log);
 	logFile->stream() << "Hello from the injected app\n";

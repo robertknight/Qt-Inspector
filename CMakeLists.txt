@@ -25,25 +25,30 @@ find_package(Protobuf REQUIRED)
 find_package(Threads REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t-")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
+add_definitions(-DUNICODE)
 
 add_subdirectory(lib)
 
 set(
-	CLASSES
-	ExternalObjectProxy
-	ExternalWidgetPicker
-	ObjectInspector
-	ObjectPropertyModel
-	ObjectTreeModel
-	OutOfProcessClipboard
-	TargetApplicationProxy
-	WidgetInspector
-	WidgetInspectorShortcut
+    CLASSES
+    ExternalObjectProxy
+    ExternalWidgetPicker
+    Injector
+    ObjectInspector
+    ObjectPropertyModel
+    ObjectTreeModel
+    OutOfProcessClipboard
+    TargetApplicationProxy
+    WidgetInspector
+    WidgetInspectorShortcut
 )
 
 if(UNIX)
   set(CLASSES ${CLASSES} GdbLibraryInjector PreloadInjector)
+elseif(WIN32)
+  set(CLASSES ${CLASSES} WindowsHookInjector)
 endif()
 
 foreach(CLASS ${CLASSES})

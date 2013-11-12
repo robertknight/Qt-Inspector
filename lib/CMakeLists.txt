@@ -26,6 +26,10 @@ include_directories(${PROTOBUF_INCLUDE_DIR})
 
 add_definitions(-DLIB_QTINSPECTOR_BUILD)
 
+if(WIN32)
+  set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+endif()
+
 add_library(
 	QtInspector
 	SHARED

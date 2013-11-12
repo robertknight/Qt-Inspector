@@ -17,5 +17,7 @@ class Injector
 		                    const QString& libraryPath, const QString& entryPoint,
 		                    int* pid) = 0;
 		virtual bool inject(int pid, const QString& libraryPath, const QString& entryPoint) = 0;
+
+		static void waitForServerReady(int pid);
 };
 

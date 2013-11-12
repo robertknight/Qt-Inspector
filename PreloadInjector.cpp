@@ -50,13 +50,7 @@ bool PreloadInjector::startAndInject(const QString& program, const QStringList& 
 
 	*pid = process->pid();
 
-	QString socketPath = InspectorServer::socketName(*pid);
-	while (!QFile::exists(socketPath))
-	{
-#ifdef Q_OS_UNIX
-		usleep(100 * 1000);
-#endif
-	}
+	waitForServerReady(*pid);
 
 	return true;
 }

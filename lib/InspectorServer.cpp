@@ -39,7 +39,7 @@ InspectorServer::InspectorServer(QTextStream* log, QObject* parent)
 
 QString InspectorServer::socketName(int pid)
 {
-	return QString("/tmp/qtinspector-%1").arg(pid);
+	return QDir::temp().filePath(QString("qtinspector-%1").arg(pid));
 }
 
 void InspectorServer::handleConnection()

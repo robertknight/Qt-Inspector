@@ -1,11 +1,16 @@
 
 #include "ExternalWidgetPicker.h"
-#include "GdbLibraryInjector.h"
-#include "PreloadInjector.h"
 #include "TargetApplicationProxy.h"
 #include "WidgetInspector.h"
 
 #include "lib/ObjectProxy.h"
+
+#ifdef Q_OS_UNIX
+#include "GdbLibraryInjector.h"
+#include "PreloadInjector.h"
+#elif defined(Q_OS_WIN32)
+#include "WindowsHookInjector.h"
+#endif
 
 #include <QApplication>
 #include <QtCore/QProcess>
@@ -19,7 +24,7 @@ QString injectorLibPath()
 #elif defined(Q_OS_MAC)
 	return "lib/libQtInspector.dylib";
 #else
-	return "lib/QtInspector.dll";
+	return "QtInspector.dll";
 #endif
 }
 
@@ -39,12 +44,19 @@ int main(int argc, char** argv)
 
 	// inject the helper library
 	QScopedPointer<Injector> injector;
+	QString entryPoint = "qtInspectorInit";
+
+#ifdef Q_OS_WIN32
+	injector.reset(new WindowsHookInjector);
+	entryPoint = "_qtInspectorLibInit@12";
+#endif
+
 	if (targetPid != 0)
 	{
 #ifdef Q_OS_UNIX
 		injector.reset(new GdbLibraryInjector);
 #endif
-		if (!injector->inject(targetPid, injectorLibPath(), "qtInspectorInit"))
+		if (!injector->inject(targetPid, injectorLibPath(), entryPoint))
 		{
 			return false;
 		}
@@ -59,7 +71,7 @@ int main(int argc, char** argv)
 		{
 			programArgs << args.at(i);
 		}
-		if (!injector->startAndInject(args.at(1),programArgs,injectorLibPath(),"qtInspectorInit",&targetPid))
+		if (!injector->startAndInject(args.at(1),programArgs,injectorLibPath(),entryPoint,&targetPid))
 		{
 			return false;
 		}
