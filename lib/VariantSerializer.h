@@ -1,8 +1,10 @@
 #pragma once
 
+#include "../libQtInspectorExport.h"
+
 #include <QtCore/QVariant>
 
-class VariantSerializer
+class LIB_QTI_EXPORT VariantSerializer
 {
 	public:
 		static QByteArray encode(const QVariant& value);

@@ -1,8 +1,10 @@
 #pragma once
 
+#include "../libQtInspectorExport.h"
+
 #include "WidgetPicker.h"
 
-class DirectWidgetPicker : public WidgetPicker
+class LIB_QTI_EXPORT DirectWidgetPicker : public WidgetPicker
 {
 	Q_OBJECT
 
