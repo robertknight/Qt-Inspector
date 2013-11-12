@@ -5,8 +5,8 @@
 #include "inspector.pb.h"
 #include "VariantSerializer.h"
 
-#include <QtGui/QApplication>
-#include <QtGui/QWidget>
+#include <QApplication>
+#include <QWidget>
 #include <QtNetwork/QLocalServer>
 #include <QtNetwork/QLocalSocket>
 #include <QtCore/QCoreApplication>

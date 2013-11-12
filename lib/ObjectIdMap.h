@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QtCore/QHash>
-#include <QtCore/QWeakPointer>
+#include <QtCore/QPointer>
 
 class ObjectIdMap
 {
@@ -12,7 +12,7 @@ class ObjectIdMap
 		QObject* getObject(int id);
 
 	private:
-		QHash<int,QWeakPointer<QObject> > m_objects;
+		QHash<int,QPointer<QObject> > m_objects;
 		int m_maxId;
 };
 

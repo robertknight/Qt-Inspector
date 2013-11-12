@@ -9,7 +9,7 @@ NetstringWriter::NetstringWriter(QByteArray* buffer)
 
 void NetstringWriter::writeMessage(const char* data, int length)
 {
-	QByteArray lengthString = QString::number(length).toAscii();
+	QByteArray lengthString = QString::number(length).toUtf8();
 	m_buffer->append(lengthString);
 	m_buffer->append(':');
 	m_buffer->append(data,length);

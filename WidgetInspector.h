@@ -3,7 +3,7 @@
 #include "libMendeleyExport.h"
 #include "lib/ObjectProxy.h"
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 class ObjectInspector;
 class ObjectTreeModel;

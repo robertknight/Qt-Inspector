@@ -7,7 +7,7 @@
 
 #include "lib/ObjectProxy.h"
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QtCore/QProcess>
 
 #include <QtDebug>

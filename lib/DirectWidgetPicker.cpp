@@ -1,7 +1,7 @@
 #include "DirectWidgetPicker.h"
 
-#include <QtGui/QApplication>
-#include <QtGui/QWidget>
+#include <QApplication>
+#include <QWidget>
 
 DirectWidgetPicker::DirectWidgetPicker(QObject* parent)
 : WidgetPicker(parent)

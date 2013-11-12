@@ -2,7 +2,7 @@
 
 #include "lib/ObjectProxy.h"
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 class QLabel;
 class QLineEdit;

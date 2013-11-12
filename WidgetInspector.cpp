@@ -9,15 +9,15 @@
 #include "lib/DirectWidgetPicker.h"
 #include "lib/WidgetPicker.h"
 
-#include <QtGui/QApplication>
-#include <QtGui/QClipboard>
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QPushButton>
-#include <QtGui/QSplitter>
-#include <QtGui/QTreeView>
-#include <QtGui/QVBoxLayout>
+#include <QApplication>
+#include <QClipboard>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSplitter>
+#include <QTreeView>
+#include <QVBoxLayout>
 
 #include <QtDebug>
 
@@ -34,7 +34,13 @@ WidgetInspector::WidgetInspector(RootObjectList* rootList, QWidget* parent)
 	m_objectTree->header()->setVisible(false);
 	m_objectTree->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 	m_objectTree->setModel(m_objectModel);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+	m_objectTree->header()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+#else
 	m_objectTree->header()->setResizeMode(0,QHeaderView::ResizeToContents);
+#endif
+
 	m_objectTree->header()->setStretchLastSection(false);
 
 	connect(m_objectTree->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),

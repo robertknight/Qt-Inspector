@@ -33,6 +33,8 @@ int ObjectTreeModel::rowCount(const QModelIndex& parent) const
 
 void ObjectTreeModel::setRootObjects(const QList<ObjectProxy::Pointer>& roots)
 {
+	beginResetModel();
+
 	qDeleteAll(m_roots);
 	m_roots.clear();
 
@@ -45,7 +47,7 @@ void ObjectTreeModel::setRootObjects(const QList<ObjectProxy::Pointer>& roots)
 		}
 	}
 
-	reset();
+	endResetModel();
 }
 
 QList<ObjectProxy::Pointer> ObjectTreeModel::rootObjects() const

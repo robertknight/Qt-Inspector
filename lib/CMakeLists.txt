@@ -26,4 +26,8 @@ add_library(
 )
 target_link_libraries(QtInspector ${QT_LIBRARIES} ${PROTOBUF_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
+if (USE_QT5)
+  qt5_use_modules(QtInspector Concurrent Widgets Network)
+endif()
+
 install(TARGETS QtInspector LIBRARY DESTINATION lib)

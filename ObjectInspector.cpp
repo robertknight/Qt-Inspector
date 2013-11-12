@@ -3,12 +3,12 @@
 #include "ObjectPropertyModel.h"
 #include "lib/ObjectProxy.h"
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QLabel>
-#include <QtGui/QLineEdit>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QTableView>
-#include <QtGui/QVBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QLineEdit>
+#include <QSortFilterProxyModel>
+#include <QTableView>
+#include <QVBoxLayout>
 
 ObjectInspector::ObjectInspector(QWidget* parent)
 : QWidget(parent)

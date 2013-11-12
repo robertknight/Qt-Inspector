@@ -2,6 +2,8 @@
 
 #include "ObjectProxy.h"
 
+#include <QtCore/QPointer>
+
 class DirectObjectProxy : public ObjectProxy
 {
 	public:
@@ -17,7 +19,7 @@ class DirectObjectProxy : public ObjectProxy
 		virtual void refresh();
 
 	private:
-		QWeakPointer<QObject> m_object;
+		QPointer<QObject> m_object;
 };
 
 

@@ -1,6 +1,6 @@
 #include "StartupHelper.h"
 
-#include <QtCore/QtConcurrentRun>
+#include <QtConcurrentRun>
 
 #include <unistd.h>
 

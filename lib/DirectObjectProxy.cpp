@@ -63,7 +63,7 @@ void DirectObjectProxy::writeProperty(const QString& name, const QVariant& value
 {
 	if (m_object)
 	{
-		m_object.data()->setProperty(name.toAscii().constData(),value);
+		m_object.data()->setProperty(name.toUtf8().constData(),value);
 	}
 }
 		
