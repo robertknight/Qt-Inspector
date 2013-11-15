@@ -5,19 +5,20 @@
 #include "TargetApplicationProxy.h"
 #include "WidgetInspector.h"
 
+#include "lib/InspectorServer.h"
 #include "lib/ObjectProxy.h"
+#include "lib/PlatformUtils.h"
 
 #include <QApplication>
+#include <QtCore/QLibrary>
 #include <QtCore/QProcess>
 
 #include <QtDebug>
 
 QString injectorLibPath()
 {
-#ifdef Q_OS_LINUX
-	return "lib/libQtInspector.so";
-#elif defined(Q_OS_MAC)
-	return "lib/libQtInspector.dylib";
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC)
+	return PlatformUtils::binaryPath(reinterpret_cast<void*>(&qtInspectorInit));
 #else
 	return "lib/QtInspector.dll";
 #endif
