@@ -56,6 +56,16 @@ add_executable(
 	main.cpp
 	${SOURCES}
 )
+if (UNIX AND NOT APPLE)
+	# compile main.cpp as position-independent code so
+	# that taking the address of the qtInspectorInit symbol
+	# in order to get the path of the libQtInspector library works
+	# as expected.
+	#
+	# See the notes in the 'Bugs' section for the dladdr() function
+	# at http://linux.die.net/man/3/dlopen
+	set_target_properties(qtinspector PROPERTIES COMPILE_FLAGS -fPIC)
+endif()
 
 target_link_libraries(
 	qtinspector
