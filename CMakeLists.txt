@@ -25,7 +25,9 @@ find_package(Protobuf REQUIRED)
 find_package(Threads REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
+if (MSVC)
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MDd")
+endif()
 
 add_subdirectory(lib)
 
