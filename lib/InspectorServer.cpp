@@ -179,21 +179,38 @@ void InspectorServer::handleRequest(const service::InspectorRequest& request,
 		case service::InspectorRequest::FetchObjectRequest:
 			{
 				QObject* object = m_objectMap.getObject(request.objectid());
-				service::QtObject* objectMessage = response->add_object();
-				updateObjectMessage(object,objectMessage,request.fetchproperties());
+				if (object)
+				{
+					service::QtObject* objectMessage = response->add_object();
+					updateObjectMessage(object,objectMessage,request.fetchproperties());
+				}
+				else
+				{
+					qWarning() << "Unable to fetch destroyed object" << request.objectid();
+				}
 			}
 			break;
 		case service::InspectorRequest::WritePropertyRequest:
 			{
 				QObject* object = m_objectMap.getObject(request.objectid());
-				updateObjectProperty(object,request.propertyupdate());
+				if (object)
+				{
+					updateObjectProperty(object,request.propertyupdate());
+				}
+				else
+				{
+					qWarning() << "Unable to modify property for destroyed object" << request.objectid();
+				}
 			}
 			break;
 		case service::InspectorRequest::PickWidgetRequest:
 			{
 				QObject* object = pickWidget();
-				service::QtObject* objectMessage = response->add_object();
-				updateObjectMessage(object,objectMessage,request.fetchproperties());
+				if (object)
+				{
+					service::QtObject* objectMessage = response->add_object();
+					updateObjectMessage(object,objectMessage,request.fetchproperties());
+				}
 			}
 	};
 }
