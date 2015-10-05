@@ -5,7 +5,7 @@ project("Qt Widget Inspector")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-option(USE_QT5 OFF)
+option(USE_QT5 "USE QT5" OFF)
 if (NOT USE_QT5)
   message("Building with Qt 4. Enable the USE_QT5 option to build with Qt 5")
 endif()
