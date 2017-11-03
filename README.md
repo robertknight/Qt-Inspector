@@ -27,6 +27,8 @@ You will need `protoc` in your PATH. On Debian/Ubuntu, install `protobuf-compile
 
 ### Usage
 
+#### without gdb
+
  Qt Inspector can either attach to an existing application or launch
  a specified application and then attach to it.
  
@@ -36,6 +38,27 @@ You will need `protoc` in your PATH. On Debian/Ubuntu, install `protobuf-compile
 	./qtinspector <program name> <args>
 	./qtinspector <process ID of running Qt app>
 ```
+
+#### with gdb (linux workflow)
+
+ Attach gdb with the running Qt Application
+ Inside gdb load the libQtInspector.so
+
+```
+(gdb) call dlopen("/path/to/libQtInspector.so",2)
+```
+ After dlopen , you can check for errors like this :
+```
+(gdb) print (char *) dlerror()
+```
+ This is final call for starting qtInspector
+```
+(gdb) call qtInspectorInit()
+
+```
+
+> It's a good idea to check the dependency of libQtInspector.so (using ldd) before opening in gdb try to resolve all the dependencies by appending the required .so files to LD_LIBRARY_PATH
+
 
 ### Design
 
