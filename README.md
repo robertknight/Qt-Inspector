@@ -41,24 +41,16 @@ You will need `protoc` in your PATH. On Debian/Ubuntu, install `protobuf-compile
 
 #### with gdb (linux workflow)
 
- Attach gdb with the running Qt Application
- Inside gdb load the libQtInspector.so
+ Attach gdb with the running Qt Application and Inside gdb load the libQtInspector.so
 
 ```
 (gdb) call dlopen("/path/to/libQtInspector.so",2)
-```
- After dlopen , you can check for errors like this :
-```
-(gdb) print (char *) dlerror()
-```
- This is final call for starting qtInspector
-```
-(gdb) call qtInspectorInit()
+(gdb) print (char *) dlerror() // After dlopen , you can check for errors
+(gdb) call qtInspectorInit()  //This is final call to start qtInspector
 
 ```
 
 > It's a good idea to check the dependency of libQtInspector.so (using ldd) before opening in gdb try to resolve all the dependencies by appending the required .so files to LD_LIBRARY_PATH
-
 
 ### Design
 
