@@ -18,7 +18,8 @@ and once connected it can:
 
 Qt Inspector currently runs on Linux and Mac.
 
-You will need `protoc` in your PATH. On Debian/Ubuntu, install `protobuf-compiler`.
+You will need `protoc` in your PATH. On Debian/Ubuntu, install `protobuf-compiler`
+and `libprotobuf-dev`.
 
 ```
 	cmake <path to Qt inspector src>
