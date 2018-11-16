@@ -28,6 +28,8 @@ and `libprotobuf-dev`.
 
 ### Usage
 
+#### without gdb
+
  Qt Inspector can either attach to an existing application or launch
  a specified application and then attach to it.
  
@@ -37,6 +39,19 @@ and `libprotobuf-dev`.
 	./qtinspector <program name> <args>
 	./qtinspector <process ID of running Qt app>
 ```
+
+#### with gdb (linux workflow)
+
+ Attach gdb with the running Qt Application and Inside gdb load the libQtInspector.so
+
+```
+(gdb) call dlopen("/path/to/libQtInspector.so",2)
+(gdb) print (char *) dlerror() // After dlopen , you can check for errors
+(gdb) call qtInspectorInit()  //This is final call to start qtInspector
+
+```
+
+> It's a good idea to check the dependency of libQtInspector.so (using ldd) before opening in gdb try to resolve all the dependencies by appending the required .so files to LD_LIBRARY_PATH
 
 ### Design
 
