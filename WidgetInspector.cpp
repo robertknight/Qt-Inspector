@@ -141,9 +141,11 @@ void WidgetInspector::flashWidget()
 
 	object->writeProperty("styleSheet", newStyle);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
 	QTimer::singleShot(500, [=]() { object->writeProperty("styleSheet", origStyle); });
 	QTimer::singleShot(1000, [=]() { object->writeProperty("styleSheet", newStyle); });
 	QTimer::singleShot(1500, [=]() { object->writeProperty("styleSheet", origStyle); });
+#endif
 
 }
 
