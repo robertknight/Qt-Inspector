@@ -16,6 +16,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSplitter>
+#include <QTimer>
 #include <QTreeView>
 #include <QVBoxLayout>
 
@@ -70,6 +71,9 @@ WidgetInspector::WidgetInspector(RootObjectList* rootList, QWidget* parent)
 	m_pickButton = new QPushButton(tr("Pick Widget"),this);
 	setWidgetPicker(new DirectWidgetPicker(this));
 
+	QPushButton* flashButton = new QPushButton(tr("Flash Widget"),this);
+	connect(flashButton,SIGNAL(clicked()),this,SLOT(flashWidget()));
+
 	QPushButton* refreshButton = new QPushButton(tr("Refresh Tree"),this);
 	connect(refreshButton,SIGNAL(clicked()),this,SLOT(refreshTree()));
 
@@ -79,6 +83,7 @@ WidgetInspector::WidgetInspector(RootObjectList* rootList, QWidget* parent)
 	QHBoxLayout* actionLayout = new QHBoxLayout;
 	actionLayout->addStretch();
 	actionLayout->addWidget(m_pickButton);
+	actionLayout->addWidget(flashButton);
 	actionLayout->addWidget(copyToDebuggerButton);
 	actionLayout->addWidget(refreshButton);
 	actionLayout->addWidget(refreshObjectButton);
@@ -113,6 +118,35 @@ void WidgetInspector::copyDebuggerReference()
 #else
 	QApplication::clipboard()->setText(reference);
 #endif
+}
+
+void WidgetInspector::flashWidget()
+{
+	ObjectProxy::Pointer object = m_objectInspector->object();
+	if (!object)
+	{
+		return;
+	}
+
+	QString origStyle;
+	for (const auto &property : object->properties())
+	{
+		if (property.name == "styleSheet")
+		{
+			origStyle = property.value.toString();
+			break;
+		}
+	}
+	QString newStyle = origStyle + " background-color: red; color: limegreen;";
+
+	object->writeProperty("styleSheet", newStyle);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+	QTimer::singleShot(500, [=]() { object->writeProperty("styleSheet", origStyle); });
+	QTimer::singleShot(1000, [=]() { object->writeProperty("styleSheet", newStyle); });
+	QTimer::singleShot(1500, [=]() { object->writeProperty("styleSheet", origStyle); });
+#endif
+
 }
 
 void WidgetInspector::selectionChanged(const QModelIndex& current, const QModelIndex& previous)
