@@ -37,6 +37,7 @@ class WidgetInspector : public QWidget
 		void pickerFinished(ObjectProxy::Pointer widget);
 		void selectionChanged(const QModelIndex& current, const QModelIndex& previous);
 		void copyDebuggerReference();
+		void flashWidget();
 
 	private:
 		void select(ObjectProxy::Pointer object);
